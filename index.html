@@ -1,1 +1,187 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Nexora</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#202124;font-family:Arial,sans-serif}
+header{height:65px;display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff}
+.logo{font-size:27px;font-weight:600;letter-spacing:-1.5px;color:#4285f4}
+.logo span{color:#34a853}
+button,input{font:inherit}
+button{cursor:pointer}
+.iconbtn{border:0;background:white;font-size:24px;padding:7px;color:#5f6368}
+main{max-width:650px;margin:auto;padding:20px 18px}
+.search{display:flex;align-items:center;gap:10px;border:1px solid #dadce0;border-radius:28px;padding:0 16px;height:49px;margin:14px 0 22px}
+.search:focus-within{box-shadow:0 1px 6px #0002}
+.search input{border:0;outline:none;width:100%;font-size:16px}
+.tabs{display:flex;gap:8px;border-bottom:1px solid #eee;margin-bottom:12px}
+.tab{background:white;border:0;padding:13px 16px;color:#5f6368}
+.tab.active{color:#1a73e8;border-bottom:2px solid #1a73e8}
+.person{display:flex;align-items:center;gap:13px;padding:14px 5px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#e8f0fe;color:#1967d2;font-weight:bold;font-size:18px;flex-shrink:0}
+.person-info{flex:1;min-width:0}
+.username{font-weight:600}
+.muted{color:#777;font-size:13px;margin-top:4px}
+.smallbtn{border:1px solid #dadce0;background:white;border-radius:18px;padding:8px 13px;color:#1a73e8}
+.primary{background:#1a73e8;color:white;border:0;border-radius:22px;padding:11px 17px}
+.panel{border:1px solid #eee;border-radius:16px;padding:20px;margin:15px 0}
+.panel input{width:100%;border:1px solid #dadce0;border-radius:10px;padding:13px;margin:8px 0 13px;outline-color:#1a73e8}
+.hidden{display:none!important}
+#chat{position:fixed;inset:0;background:#fff;z-index:5;display:flex;flex-direction:column}
+.chathead{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:13px;padding:0 12px}
+.chatbody{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.bubble{max-width:82%;padding:11px 14px;border-radius:18px;background:#f1f3f4;align-self:flex-start;overflow-wrap:anywhere}
+.bubble.mine{background:#e8f0fe;align-self:flex-end}
+.chatfoot{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
+.chatfoot input{flex:1;min-width:0;border:1px solid #dadce0;border-radius:24px;padding:12px 15px;outline-color:#1a73e8}
+.note{font-size:12px;color:#777;line-height:1.5}
+.empty{text-align:center;color:#777;padding:30px 5px}
+</style>
+</head>
+<body>
+<header>
+<button class="iconbtn" id="menuBtn" aria-label="Menü">☰</button>
+<div class="logo">Nex<span>ora</span></div>
+<div style="flex:1"></div>
+<button class="iconbtn" id="searchBtn" aria-label="Ara">⌕</button>
+</header>
+
+<main>
+<section id="home">
+<div id="welcome" style="margin:15px 0;font-size:14px;color:#5f6368">Kullanıcılarını bul ve sohbete başla.</div>
+<div class="search" id="searchBox">
+<span style="font-size:20px;color:#777">⌕</span>
+<input id="searchInput" placeholder="Kullanıcı adı ara..." autocomplete="off">
+<button id="clearSearch" class="iconbtn" style="display:none">×</button>
+</div>
+<div class="tabs">
+<button class="tab active" data-tab="people">Kişiler</button>
+<button class="tab" data-tab="chats">Sohbetler</button>
+</div>
+<div id="results"></div>
+<div id="profilePanel" class="panel hidden">
+<strong>Nexora kullanıcı adın</strong>
+<p class="muted">Benzersiz bir isim seç.</p>
+<input id="usernameInput" maxlength="20" placeholder="Örn. brine_01">
+<button class="primary" id="saveName">Kullanıcı adını ayarla</button>
+<p class="note">Bu ilk taslaktır. Hesap ve kullanıcı adı henüz sunucuya kaydedilmiyor.</p>
+</div>
+<div id="createPanel" class="panel hidden">
+<strong>Yeni sohbet</strong>
+<p class="muted">Önce arama alanından bir kullanıcı bul.</p>
+<button class="smallbtn" id="goSearch">Kişi ara</button>
+</div>
+<p class="note" style="margin-top:24px">Nexora · İlk taslak</p>
+</section>
+</main>
+
+<section id="chat" class="hidden">
+<div class="chathead">
+<button class="iconbtn" id="backBtn">←</button>
+<div class="avatar" id="chatAvatar">N</div>
+<div style="flex:1">
+<div class="username" id="chatName">Kullanıcı</div>
+<div class="muted">Sohbet</div>
+</div>
+</div>
+<div id="chatMessages" class="chatbody"></div>
+<form id="messageForm" class="chatfoot">
+<input id="messageInput" maxlength="2000" placeholder="Mesaj yaz..." autocomplete="off">
+<button class="primary" type="submit">Gönder</button>
+</form>
+</section>
+
+<script>
+const $ = id => document.getElementById(id);
+let myName = localStorage.getItem("nexora_name") || "";
+let activeTab = "people";
+let currentPerson = "";
+let demoUsers = ["brine","nexura","shadow","kevin","gladio"];
+let localMessages = {};
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function getMessages(name){
+ return localMessages[name] || (localMessages[name]=[]);
+}
+function render(){
+ $("welcome").textContent = myName ? "Merhaba, @"+myName : "Kullanıcılarını bul ve sohbete başla.";
+ $("profilePanel").classList.add("hidden");
+ $("createPanel").classList.add("hidden");
+ const q=$("searchInput").value.trim().toLowerCase();
+ $("clearSearch").style.display=q?"block":"none";
+ let names = [...new Set(demoUsers)];
+ if(myName && !names.includes(myName)) names.unshift(myName);
+ let html="";
+ if(activeTab==="chats"){
+  names = names.filter(n=>n!==myName && getMessages(n).length);
+  names.forEach(n=>html+=personHTML(n,"Son mesaj: "+getMessages(n).at(-1).text));
+ }else{
+  names = names.filter(n=>n!==myName && n.toLowerCase().includes(q));
+  if(q && !names.length) html='<div class="empty">Kullanıcı bulunamadı.</div>';
+  names.forEach(n=>html+=personHTML(n,"Nexora kullanıcısı"));
+ }
+ $("results").innerHTML=html || (activeTab==="chats"?'<div class="empty">Henüz sohbetin yok.</div>':'<div class="empty">Kullanıcı ara.</div>');
+}
+function personHTML(n,desc){
+ return `<div class="person" data-user="${escapeHTML(n)}">
+ <div class="avatar">${escapeHTML(n.slice(0,1).toUpperCase())}</div>
+ <div class="person-info"><div class="username">${escapeHTML(n)}</div>
+ <div class="muted">${escapeHTML(desc)}</div></div>
+ <button class="smallbtn" type="button">Mesaj</button></div>`;
+}
+function openChat(n){
+ if(!myName){$("profilePanel").classList.remove("hidden");$("usernameInput").focus();return}
+ currentPerson=n;
+ $("chatName").textContent=n;
+ $("chatAvatar").textContent=n.slice(0,1).toUpperCase();
+ $("chat").classList.remove("hidden");
+ renderMessages();
+}
+function renderMessages(){
+ const msgs=getMessages(currentPerson);
+ $("chatMessages").innerHTML=msgs.map(m=>`<div class="bubble ${m.mine?"mine":""}">${escapeHTML(m.text)}</div>`).join("");
+ $("chatMessages").scrollTop=$("chatMessages").scrollHeight;
+}
+$("results").addEventListener("click",e=>{
+ const p=e.target.closest("[data-user]");
+ if(p)openChat(p.dataset.user);
+});
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+ activeTab=b.dataset.tab;
+ document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));
+ render();
+});
+$("searchInput").addEventListener("input",render);
+$("clearSearch").onclick=()=>{$("searchInput").value="";render()};
+$("searchBtn").onclick=()=>{$("searchInput").focus();window.scrollTo({top:0,behavior:"smooth"})};
+$("menuBtn").onclick=()=>{$("profilePanel").classList.toggle("hidden");$("usernameInput").value=myName};
+$("saveName").onclick=()=>{
+ const n=$("usernameInput").value.trim().toLowerCase();
+ if(!/^[a-z0-9_]{3,20}$/.test(n)){alert("3-20 karakter kullan. Harf, rakam ve _ olabilir.");return}
+ if(demoUsers.includes(n)&&n!==myName){alert("Bu isim örnek listede dolu.");return}
+ myName=n;localStorage.setItem("nexora_name",n);render();
+};
+$("goSearch").onclick=()=>{$("searchInput").focus();$("searchBox").scrollIntoView({behavior:"smooth"})};
+$("backBtn").onclick=()=>{$("chat").classList.add("hidden");render()};
+$("messageForm").onsubmit=e=>{
+ e.preventDefault();
+ const text=$("messageInput").value.trim();
+ if(!text||!currentPerson)return;
+ getMessages(currentPerson).push({text,mine:true});
+ $("messageInput").value="";
+ renderMessages();
+};
+// Bu sürüm yalnızca arayüz prototipidir.
+// Gerçek kullanıcı araması ve cihazlar arası mesajlaşma için
+// sunucu/veritabanı bağlantısı sonraki aşamada eklenecek.
+render();
+</script>
+</body>
+</html>
