@@ -3,13 +3,11 @@
 <html lang="tr" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="google" content="notranslate">
 <meta name="robots" content="noindex">
 <title>StableX</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#10131c;color:#f4f5fa}
@@ -17,8 +15,8 @@ body{overflow:hidden}
 button,input{font:inherit}
 button{cursor:pointer;border:0}
 #app{height:100dvh;display:flex;flex-direction:column}
-header{height:62px;background:#191e2b;border-bottom:1px solid #2b3141;display:flex;align-items:center;padding:0 18px;justify-content:space-between}
-.logo{font-size:23px;font-weight:800;color:#8b91ff;letter-spacing:.5px}
+header{height:58px;background:#191e2b;border-bottom:1px solid #30374a;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
+.logo{font-size:23px;font-weight:800;color:#8b91ff}
 #status{font-size:12px;color:#9da5ba}
 .screen{display:none;flex:1;min-height:0}
 .screen.active{display:flex}
@@ -29,38 +27,55 @@ header{height:62px;background:#191e2b;border-bottom:1px solid #2b3141;display:fl
 input{width:100%;background:#101521;color:white;border:1px solid #343c50;border-radius:10px;padding:13px;outline:none;margin:8px 0}
 input:focus{border-color:#858bff}
 .primary{background:#777eff;color:white;border-radius:10px;padding:13px;width:100%;font-weight:700;margin-top:8px}
-.secondary{background:#292f40;color:#e9eaff;border-radius:10px;padding:12px;width:100%;margin-top:9px}
+.secondary{background:#292f40;color:#e9eaff;border-radius:10px;padding:11px;width:100%;margin-top:8px}
 #mainScreen{flex-direction:row;min-height:0}
-#sidebar{width:310px;min-width:270px;background:#191e2b;border-right:1px solid #30374a;display:flex;flex-direction:column;min-height:0}
-.sidehead{padding:17px;border-bottom:1px solid #30374a}
-.sidehead h3{margin:0 0 8px}
+#sidebar{width:320px;min-width:270px;background:#191e2b;border-right:1px solid #30374a;display:flex;flex-direction:column;min-height:0}
+.sidehead{padding:14px;border-bottom:1px solid #30374a}
+.sidehead h3{margin:0 0 7px}
 #search{margin:8px 0 0}
+#groupCreateBtn{background:#30375a;color:#dfe1ff;padding:11px;border-radius:9px;width:100%;font-weight:bold;margin-top:9px}
 #contactList{overflow-y:auto;flex:1;padding:8px}
-.contact{display:flex;align-items:center;gap:11px;padding:12px;border-radius:11px;cursor:pointer;margin-bottom:4px}
+.section-title{font-size:11px;color:#929bb3;font-weight:bold;letter-spacing:1px;padding:13px 9px 7px}
+.contact{display:flex;align-items:center;gap:11px;padding:11px;border-radius:11px;cursor:pointer;margin-bottom:4px}
 .contact:hover,.contact.selected{background:#292f40}
 .avatar{width:39px;height:39px;border-radius:50%;background:#555ed0;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}
+.group-avatar{background:#168b69}
 .contactinfo{flex:1;min-width:0}
 .contactname{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lastmsg{font-size:12px;color:#9da5ba;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .unread{background:#ff4058;color:white;min-width:21px;height:21px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;padding:0 6px}
+#searchResults{border-bottom:1px solid #30374a;max-height:190px;overflow-y:auto}
+.result{padding:10px 13px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.result:hover{background:#292f40}
+.emptylist{text-align:center;color:#8d96ac;font-size:13px;padding:22px 12px}
 #chatPanel{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
 #chatEmpty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:#9da5ba;padding:20px}
-#chatHeader{height:62px;border-bottom:1px solid #30374a;display:flex;align-items:center;padding:0 16px;gap:10px}
+#chatHeader{height:62px;border-bottom:1px solid #30374a;display:flex;align-items:center;padding:0 15px;gap:10px;flex-shrink:0}
 #chatName{font-weight:bold}
+#chatSub{font-size:11px;color:#9da5ba;margin-top:4px}
 #messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px}
 .msg{max-width:min(78%,500px);padding:11px 13px;border-radius:13px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4}
 .mine{background:#5962d7;align-self:flex-end;border-bottom-right-radius:4px}
 .theirs{background:#292f40;align-self:flex-start;border-bottom-left-radius:4px}
+.msgsender{font-size:11px;color:#aeb5ff;margin-bottom:5px;font-weight:bold}
 .msgtime{font-size:10px;opacity:.65;margin-top:5px;text-align:right}
-#sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #30374a}
+#sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #30374a;flex-shrink:0}
 #messageInput{margin:0;flex:1;min-width:0}
 #sendBtn{background:#777eff;color:white;border-radius:10px;padding:0 18px;font-weight:bold}
 #backBtn{display:none;background:#292f40;color:white;border-radius:8px;padding:8px 11px}
-.emptylist{text-align:center;color:#8d96ac;font-size:13px;padding:25px 12px}
-#searchResults{border-bottom:1px solid #30374a;max-height:190px;overflow-y:auto}
-.result{padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
-.result:hover{background:#292f40}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343b50;color:white;padding:12px 17px;border-radius:10px;display:none;z-index:5;max-width:90%;font-size:13px}
+.modal-bg{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:15px;z-index:10}
+.modal-bg.show{display:flex}
+.modal{background:#191e2b;border:1px solid #343c50;border-radius:16px;width:100%;max-width:440px;max-height:85dvh;display:flex;flex-direction:column;padding:17px}
+.modal h3{margin:0 0 5px}
+.modal-scroll{overflow-y:auto;min-height:0}
+.modal-actions{display:flex;gap:8px;margin-top:12px}
+.modal-actions button{flex:1}
+.select-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer}
+.select-user:hover{background:#292f40}
+.select-user.chosen{background:#173c32}
+.checkmark{margin-left:auto;color:#39df9b;font-size:23px;font-weight:bold}
+.group-count{font-size:12px;color:#9da5ba;margin:4px 0 10px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343b50;color:white;padding:12px 17px;border-radius:10px;display:none;z-index:20;max-width:90%;font-size:13px}
 @media(max-width:650px){
  #sidebar{width:100%;min-width:0;border:0}
  #chatPanel{display:none}
@@ -71,471 +86,524 @@ input:focus{border-color:#858bff}
 }
 </style>
 </head>
-
 <body translate="no">
 <div id="app">
 <header>
-  <div class="logo">StableX</div>
-  <div id="status">Bağlanıyor...</div>
+ <div class="logo">StableX</div>
+ <div id="status">Bağlanıyor...</div>
 </header>
 
 <section id="authScreen" class="screen active">
-  <div class="authbox">
-    <h2 id="authTitle">StableX'ya Hoş Geldin</h2>
-    <p class="muted" id="authInfo">Bir kullanıcı adı belirleyerek sohbete başla.</p>
-    <input id="usernameInput" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
-    <button class="primary" id="authBtn" onclick="register()">Hesap oluştur</button>
-    <p class="muted" id="authError"></p>
-  </div>
+ <div class="authbox">
+  <h2>StableX'e Hoş Geldin</h2>
+  <p class="muted">Bir kullanıcı adı belirleyerek sohbete başla.</p>
+  <input id="usernameInput" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+  <button class="primary" id="authBtn" onclick="register()">Hesap oluştur</button>
+  <p class="muted" id="authError"></p>
+ </div>
 </section>
 
 <section id="mainScreen" class="screen">
-  <aside id="sidebar">
-    <div class="sidehead">
-      <h3>Mesajlar</h3>
-      <div class="muted" id="myUsername"></div>
-      <input id="search" placeholder="Kişi ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
-    </div>
-    <div id="searchResults"></div>
-    <div id="contactList"><div class="emptylist">Henüz sohbetin yok.</div></div>
-  </aside>
+ <aside id="sidebar">
+  <div class="sidehead">
+   <h3>StableX Mesajlar</h3>
+   <div class="muted" id="myUsername"></div>
+   <button id="groupCreateBtn" onclick="openGroupModal()">＋ Grup oluştur</button>
+   <input id="search" placeholder="Kişi ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+  </div>
+  <div id="searchResults"></div>
+  <div id="contactList"><div class="emptylist">Yükleniyor...</div></div>
+ </aside>
 
-  <main id="chatPanel">
-    <div id="chatEmpty">
-      <div>
-        <div style="font-size:42px">✉</div>
-        <h3>Nexora Sohbet</h3>
-        <p>Bir kişi seç veya yeni bir kullanıcı ara.</p>
-      </div>
-    </div>
-
-    <div id="chatHeader" style="display:none">
-      <button id="backBtn" onclick="closeChat()">←</button>
-      <div class="avatar" id="chatAvatar">?</div>
-      <div id="chatName"></div>
-    </div>
-
-    <div id="messages" style="display:none" translate="no"></div>
-
-    <div id="sendArea" style="display:none">
-      <input id="messageInput" placeholder="Mesajını yaz..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
-      <button id="sendBtn" onclick="sendMessage()">Gönder</button>
-    </div>
-  </main>
+ <main id="chatPanel">
+  <div id="chatEmpty">
+   <div>
+    <div style="font-size:42px">✉</div>
+    <h3>StableX Sohbet</h3>
+    <p>Bir kişi veya grup seç.</p>
+   </div>
+  </div>
+  <div id="chatHeader" style="display:none">
+   <button id="backBtn" onclick="closeChat()">←</button>
+   <div class="avatar" id="chatAvatar">?</div>
+   <div>
+    <div id="chatName"></div>
+    <div id="chatSub"></div>
+   </div>
+  </div>
+  <div id="messages" style="display:none" translate="no"></div>
+  <div id="sendArea" style="display:none">
+   <input id="messageInput" placeholder="Mesajını yaz..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+   <button id="sendBtn" onclick="sendMessage()">Gönder</button>
+  </div>
+ </main>
 </section>
+</div>
+
+<div id="groupModal" class="modal-bg">
+ <div class="modal">
+  <h3>Yeni grup oluştur</h3>
+  <p class="muted">Grup kurucusu dahil en az 3, en fazla 10 kişi seçebilirsin.</p>
+  <input id="groupName" maxlength="40" placeholder="Grup adı" autocomplete="off" translate="no">
+  <div class="group-count" id="memberCount">Seçilen kişi: 1 / 10 (sen dahil)</div>
+  <input id="groupSearch" placeholder="Kullanıcı ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+  <div class="modal-scroll" id="groupUserList">
+   <div class="emptylist">Kullanıcılar yükleniyor...</div>
+  </div>
+  <div class="modal-actions">
+   <button class="secondary" onclick="closeGroupModal()">İptal</button>
+   <button class="primary" style="margin:0" id="createGroupBtn" onclick="createGroup()">Grubu oluştur</button>
+  </div>
+ </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const SUPABASE_URL = "https://qddemnxngjjiwcmisqtb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_uAiMJd3Q6lyzoUOsKNhpuw_FbUFzxk_";
+const SUPABASE_URL="https://qddemnxngjjiwcmisqtb.supabase.co";
+const SUPABASE_KEY="sb_publishable_uAiMJd3Q6lyzoUOsKNhpuw_FbUFzxk_";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let myId = null;
-let myProfile = null;
-let selectedUser = null;
-let contacts = [];
-let searchTimer = null;
-let refreshTimer = null;
-let lastMessageCount = 0;
-
-const $ = id => document.getElementById(id);
+let myId=null,myProfile=null;
+let selectedChat=null;
+let contacts=[],groups=[],groupUsers=[],selectedMembers=new Set();
+let searchTimer=null,groupSearchTimer=null,refreshTimer=null;
+let busy=false;
 
 function toast(message){
-  const el = $("toast");
-  el.textContent = message;
-  el.style.display = "block";
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(()=>el.style.display="none",3000);
+ const el=$("toast");
+ el.textContent=message;
+ el.style.display="block";
+ clearTimeout(toast.timer);
+ toast.timer=setTimeout(()=>el.style.display="none",3500);
 }
-
 function showScreen(id){
-  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
-  $(id).classList.add("active");
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+ $(id).classList.add("active");
 }
-
-function showError(message){
-  $("authError").textContent = message;
-}
+function showError(message){$("authError").textContent=message}
 
 async function start(){
-  try{
-    let {data:{session},error} = await db.auth.getSession();
-    if(error) throw error;
-
-    if(!session){
-      const result = await db.auth.signInAnonymously();
-      if(result.error) throw result.error;
-      session = result.data.session;
-    }
-
-    myId = session.user.id;
-
-    const {data:profile,error:profileError} = await db
-      .from("profiles")
-      .select("*")
-      .eq("id",myId)
-      .maybeSingle();
-
-    if(profileError) throw profileError;
-
-    if(!profile){
-      $("status").textContent = "Kullanıcı oluştur";
-      showScreen("authScreen");
-      return;
-    }
-
-    myProfile = profile;
-    enterApp();
-  }catch(error){
-    $("status").textContent = "Bağlantı hatası";
-    showError(error.message);
-    showScreen("authScreen");
+ try{
+  let {data:{session},error}=await db.auth.getSession();
+  if(error)throw error;
+  if(!session){
+   const result=await db.auth.signInAnonymously();
+   if(result.error)throw result.error;
+   session=result.data.session;
   }
+  myId=session.user.id;
+  const {data:profile,error:pe}=await db.from("profiles").select("*").eq("id",myId).maybeSingle();
+  if(pe)throw pe;
+  if(!profile){
+   $("status").textContent="Kullanıcı oluştur";
+   showScreen("authScreen");
+   return;
+  }
+  myProfile=profile;
+  enterApp();
+ }catch(e){
+  $("status").textContent="Bağlantı hatası";
+  showError(e.message);
+  showScreen("authScreen");
+ }
 }
 
 async function register(){
-  const username = $("usernameInput").value.trim();
-
-  if(username.length < 3){
-    showError("Kullanıcı adı en az 3 karakter olmalı.");
-    return;
-  }
-
-  if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){
-    showError("Kullanıcı adında boşluk veya özel karakter kullanma.");
-    return;
-  }
-
-  $("authBtn").disabled = true;
-  showError("Kontrol ediliyor...");
-
-  try{
-    const {data:existing,error:checkError} = await db
-      .from("profiles")
-      .select("id")
-      .ilike("username",username)
-      .limit(1);
-
-    if(checkError) throw checkError;
-    if(existing && existing.length){
-      showError("Bu kullanıcı adı zaten kullanılıyor.");
-      return;
-    }
-
-    const {data,error} = await db
-      .from("profiles")
-      .insert({id:myId,username})
-      .select()
-      .single();
-
-    if(error) throw error;
-
-    myProfile = data;
-    enterApp();
-  }catch(error){
-    showError("Hata: " + error.message);
-  }finally{
-    $("authBtn").disabled = false;
-  }
+ const username=$("usernameInput").value.trim();
+ if(username.length<3){showError("Kullanıcı adı en az 3 karakter olmalı.");return}
+ if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){
+  showError("Kullanıcı adında boşluk veya özel karakter kullanma.");return;
+ }
+ $("authBtn").disabled=true;
+ showError("Kontrol ediliyor...");
+ try{
+  const {data:existing,error:ce}=await db.from("profiles").select("id").ilike("username",username).limit(1);
+  if(ce)throw ce;
+  if(existing?.length){showError("Bu kullanıcı adı zaten kullanılıyor.");return}
+  const {data,error}=await db.from("profiles").insert({id:myId,username}).select().single();
+  if(error)throw error;
+  myProfile=data;
+  enterApp();
+ }catch(e){showError("Hata: "+e.message)}
+ finally{$("authBtn").disabled=false}
 }
 
 function enterApp(){
-  $("status").textContent = "Çevrimiçi";
-  $("myUsername").textContent = "@" + myProfile.username;
-  showScreen("mainScreen");
-  loadContacts();
-  refreshTimer = setInterval(refreshAll,3000);
+ $("status").textContent="Çevrimiçi";
+ $("myUsername").textContent="@"+myProfile.username;
+ showScreen("mainScreen");
+ refreshAll();
+ if(refreshTimer)clearInterval(refreshTimer);
+ refreshTimer=setInterval(refreshAll,5000);
 }
 
 async function refreshAll(){
-  await loadContacts();
-  if(selectedUser) await loadMessages();
+ if(busy)return;
+ busy=true;
+ try{
+  await Promise.all([loadContacts(),loadGroups()]);
+  if(selectedChat){
+   if(selectedChat.type==="private")await loadPrivateMessages();
+   else await loadGroupMessages();
+  }
+ }finally{busy=false}
 }
 
 async function loadContacts(){
-  try{
-    const {data:msgs,error} = await db
-      .from("messages")
-      .select("id,sender_id,receiver_id,content,created_at,read_at")
-      .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
-      .order("created_at",{ascending:false})
-      .limit(1000);
+ try{
+  const {data:msgs,error}=await db.from("messages")
+   .select("id,sender_id,receiver_id,content,created_at,read_at")
+   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
+   .order("created_at",{ascending:false}).limit(1000);
+  if(error)throw error;
 
-    if(error) throw error;
-
-    const latest = new Map();
-    const unread = new Map();
-
-    for(const msg of msgs || []){
-      const otherId = msg.sender_id === myId ? msg.receiver_id : msg.sender_id;
-
-      if(!latest.has(otherId)) latest.set(otherId,msg);
-
-      if(msg.receiver_id === myId && !msg.read_at){
-        unread.set(otherId,(unread.get(otherId)||0)+1);
-      }
-    }
-
-    const ids = [...latest.keys()];
-
-    if(ids.length === 0){
-      contacts = [];
-      renderContacts();
-      return;
-    }
-
-    const {data:profiles,error:usersError} = await db
-      .from("profiles")
-      .select("id,username")
-      .in("id",ids);
-
-    if(usersError) throw usersError;
-
-    const profileMap = new Map((profiles||[]).map(p=>[p.id,p]));
-
-    contacts = ids.map(id=>{
-      const p = profileMap.get(id);
-      const msg = latest.get(id);
-      if(!p) return null;
-      return {
-        ...p,
-        lastMessage:msg.content,
-        lastTime:msg.created_at,
-        unread:unread.get(id)||0
-      };
-    }).filter(Boolean);
-
-    renderContacts();
-  }catch(error){
-    console.error("Kişiler yüklenemedi:",error);
+  const latest=new Map(),unread=new Map();
+  for(const m of msgs||[]){
+   const other=m.sender_id===myId?m.receiver_id:m.sender_id;
+   if(!latest.has(other))latest.set(other,m);
+   if(m.receiver_id===myId&&!m.read_at)unread.set(other,(unread.get(other)||0)+1);
   }
+  const ids=[...latest.keys()];
+  if(!ids.length){contacts=[];renderContacts();return}
+  const {data:profiles,error:pe}=await db.from("profiles").select("id,username").in("id",ids);
+  if(pe)throw pe;
+  const map=new Map((profiles||[]).map(p=>[p.id,p]));
+  contacts=ids.map(id=>{
+   const p=map.get(id),m=latest.get(id);
+   return p?{...p,lastMessage:m.content,lastTime:m.created_at,unread:unread.get(id)||0}:null;
+  }).filter(Boolean);
+  renderContacts();
+ }catch(e){console.error("Özel kişiler:",e)}
+}
+
+async function loadGroups(){
+ try{
+  const {data:members,error:me}=await db.from("group_members").select("group_id").eq("user_id",myId);
+  if(me)throw me;
+  const ids=[...new Set((members||[]).map(x=>x.group_id))];
+  if(!ids.length){groups=[];renderContacts();return}
+  const {data:gs,error:ge}=await db.from("chat_groups").select("id,name,owner_id,created_at").in("id",ids);
+  if(ge)throw ge;
+
+  const {data:gm,error:gme}=await db.from("group_messages").select("id,group_id,sender_id,content,created_at").in("group_id",ids).order("created_at",{ascending:false}).limit(1000);
+  if(gme)throw gme;
+
+  const messageIds=(gm||[]).map(x=>x.id);
+  let readSet=new Set();
+  if(messageIds.length){
+   const {data:reads,error:re}=await db.from("group_message_reads").select("message_id").eq("user_id",myId).in("message_id",messageIds);
+   if(re)throw re;
+   readSet=new Set((reads||[]).map(x=>String(x.message_id)));
+  }
+
+  groups=(gs||[]).map(g=>{
+   const own=(gm||[]).filter(m=>m.group_id===g.id);
+   const latest=own[0]||null;
+   const unread=own.filter(m=>m.sender_id!==myId&&!readSet.has(String(m.id))).length;
+   return {...g,lastMessage:latest?.content||"Henüz mesaj yok",unread};
+  }).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  renderContacts();
+ }catch(e){console.error("Gruplar:",e)}
+}
+
+function makeContact(item,type){
+ const row=document.createElement("div");
+ row.className="contact"+(selectedChat?.type===type&&selectedChat?.id===item.id?" selected":"");
+ const av=document.createElement("div");
+ av.className="avatar"+(type==="group"?" group-avatar":"");
+ av.textContent=type==="group"?"G":(item.username||"?").charAt(0).toUpperCase();
+ const info=document.createElement("div");
+ info.className="contactinfo";
+ const name=document.createElement("div");
+ name.className="contactname";
+ name.textContent=type==="group"?"▣ "+item.name:item.username;
+ const last=document.createElement("div");
+ last.className="lastmsg";
+ last.textContent=item.lastMessage||"Henüz mesaj yok";
+ info.append(name,last);row.append(av,info);
+ if(item.unread>0){
+  const badge=document.createElement("div");
+  badge.className="unread";
+  badge.textContent=item.unread>99?"99+":item.unread;
+  row.append(badge);
+ }
+ row.onclick=()=>type==="group"?openGroup(item):openPrivate(item);
+ return row;
 }
 
 function renderContacts(){
-  const list = $("contactList");
+ const box=$("contactList");
+ box.innerHTML="";
+ const title1=document.createElement("div");
+ title1.className="section-title";
+ title1.textContent="GRUPLAR";
+ box.append(title1);
+ if(!groups.length){
+  const e=document.createElement("div");
+  e.className="emptylist";e.textContent="Henüz grubun yok.";
+  box.append(e);
+ }else groups.forEach(g=>box.append(makeContact(g,"group")));
 
-  if(!contacts.length){
-    list.innerHTML = '<div class="emptylist">Henüz sohbetin yok.<br>Yeni kişi bulmak için arama yap.</div>';
-    return;
-  }
-
-  list.innerHTML = "";
-
-  contacts.forEach(user=>{
-    const item = document.createElement("div");
-    item.className = "contact" + (selectedUser?.id===user.id ? " selected":"");
-
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
-    avatar.textContent = user.username.charAt(0).toUpperCase();
-
-    const info = document.createElement("div");
-    info.className = "contactinfo";
-
-    const name = document.createElement("div");
-    name.className = "contactname";
-    name.textContent = user.username;
-
-    const last = document.createElement("div");
-    last.className = "lastmsg";
-    last.textContent = user.lastMessage;
-
-    info.append(name,last);
-    item.append(avatar,info);
-
-    if(user.unread>0){
-      const badge = document.createElement("div");
-      badge.className = "unread";
-      badge.textContent = user.unread>99 ? "99+" : user.unread;
-      item.append(badge);
-    }
-
-    item.onclick = ()=>openChat(user);
-    list.append(item);
-  });
+ const title2=document.createElement("div");
+ title2.className="section-title";
+ title2.textContent="ÖZEL MESAJLAR";
+ box.append(title2);
+ if(!contacts.length){
+  const e=document.createElement("div");
+  e.className="emptylist";e.textContent="Henüz özel sohbetin yok. Kişi arayabilirsin.";
+  box.append(e);
+ }else contacts.forEach(c=>box.append(makeContact(c,"private")));
 }
 
 $("search").addEventListener("input",()=>{
-  clearTimeout(searchTimer);
-  const q = $("search").value.trim();
-  if(q.length<2){
-    $("searchResults").innerHTML="";
-    return;
-  }
-  searchTimer = setTimeout(()=>searchUsers(q),300);
+ clearTimeout(searchTimer);
+ const q=$("search").value.trim();
+ if(q.length<2){$("searchResults").innerHTML="";return}
+ searchTimer=setTimeout(()=>searchUsers(q),300);
 });
 
 async function searchUsers(q){
-  try{
-    const {data,error} = await db
-      .from("profiles")
-      .select("id,username")
-      .ilike("username",`%${q}%`)
-      .neq("id",myId)
-      .limit(20);
-
-    if(error) throw error;
-
-    const results = $("searchResults");
-    results.innerHTML="";
-
-    if(!data || !data.length){
-      results.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
-      return;
-    }
-
-    data.forEach(user=>{
-      const row=document.createElement("div");
-      row.className="result";
-
-      const avatar=document.createElement("div");
-      avatar.className="avatar";
-      avatar.textContent=user.username.charAt(0).toUpperCase();
-
-      const name=document.createElement("b");
-      name.textContent=user.username;
-
-      row.append(avatar,name);
-      row.onclick=()=>openChat(user);
-      results.append(row);
-    });
-  }catch(error){
-    console.error("Arama hatası:",error);
-    toast("Arama hatası: "+error.message);
-  }
+ try{
+  const {data,error}=await db.from("profiles").select("id,username").ilike("username",`%${q}%`).neq("id",myId).limit(20);
+  if(error)throw error;
+  const box=$("searchResults");box.innerHTML="";
+  if(!data?.length){box.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';return}
+  data.forEach(u=>{
+   const row=document.createElement("div");row.className="result";
+   const av=document.createElement("div");av.className="avatar";av.textContent=u.username[0].toUpperCase();
+   const name=document.createElement("b");name.textContent=u.username;
+   row.append(av,name);row.onclick=()=>openPrivate(u);box.append(row);
+  });
+ }catch(e){toast("Arama hatası: "+e.message)}
 }
 
-async function openChat(user){
-  selectedUser=user;
-  $("mainScreen").classList.add("chat-open");
-  $("chatEmpty").style.display="none";
-  $("chatHeader").style.display="flex";
-  $("messages").style.display="flex";
-  $("sendArea").style.display="flex";
-  $("chatName").textContent=user.username;
-  $("chatAvatar").textContent=user.username.charAt(0).toUpperCase();
-  $("messageInput").focus();
+function showChat(){
+ $("mainScreen").classList.add("chat-open");
+ $("chatEmpty").style.display="none";
+ $("chatHeader").style.display="flex";
+ $("messages").style.display="flex";
+ $("sendArea").style.display="flex";
+ $("searchResults").innerHTML="";
+ $("search").value="";
+}
 
-  await markAsRead();
-  await loadMessages();
-  await loadContacts();
+async function openPrivate(user){
+ selectedChat={type:"private",id:user.id,user};
+ $("chatName").textContent=user.username;
+ $("chatSub").textContent="Özel sohbet";
+ $("chatAvatar").textContent=user.username[0].toUpperCase();
+ $("chatAvatar").className="avatar";
+ showChat();
+ await markPrivateRead();
+ await loadPrivateMessages();
+ await loadContacts();
+ $("messageInput").focus();
+}
 
-  $("searchResults").innerHTML="";
-  $("search").value="";
+async function openGroup(group){
+ selectedChat={type:"group",id:group.id,group};
+ $("chatName").textContent=group.name;
+ $("chatSub").textContent="Grup sohbeti";
+ $("chatAvatar").textContent="G";
+ $("chatAvatar").className="avatar group-avatar";
+ showChat();
+ await markGroupRead();
+ await loadGroupMessages();
+ await loadGroups();
+ $("messageInput").focus();
 }
 
 async function closeChat(){
-  selectedUser=null;
-  $("mainScreen").classList.remove("chat-open");
-  $("chatEmpty").style.display="flex";
-  $("chatHeader").style.display="none";
-  $("messages").style.display="none";
-  $("sendArea").style.display="none";
-  await loadContacts();
+ selectedChat=null;
+ $("mainScreen").classList.remove("chat-open");
+ $("chatEmpty").style.display="flex";
+ $("chatHeader").style.display="none";
+ $("messages").style.display="none";
+ $("sendArea").style.display="none";
+ await refreshAll();
 }
 
-async function markAsRead(){
-  if(!selectedUser) return;
-
-  const {error} = await db.rpc("mark_messages_read",{
-    other_user_id:selectedUser.id
-  });
-
-  if(error){
-    console.error("Okundu bilgisi güncellenemedi:",error);
-  }
+async function markPrivateRead(){
+ if(!selectedChat||selectedChat.type!=="private")return;
+ const {error}=await db.rpc("mark_messages_read",{other_user_id:selectedChat.id});
+ if(error)console.error("Özel mesaj okundu hatası:",error);
 }
 
-async function loadMessages(){
-  if(!selectedUser) return;
+async function markGroupRead(){
+ if(!selectedChat||selectedChat.type!=="group")return;
+ const {error}=await db.rpc("mark_group_messages_read",{p_group_id:selectedChat.id});
+ if(error)console.error("Grup okundu hatası:",error);
+}
 
-  const {data,error} = await db
-    .from("messages")
-    .select("*")
-    .or(
-      `and(sender_id.eq.${myId},receiver_id.eq.${selectedUser.id}),and(sender_id.eq.${selectedUser.id},receiver_id.eq.${myId})`
-    )
-    .order("created_at",{ascending:true})
-    .limit(500);
+function addMessage(msg,username){
+ const bubble=document.createElement("div");
+ bubble.className="msg "+(msg.sender_id===myId?"mine":"theirs");
+ if(selectedChat?.type==="group"&&msg.sender_id!==myId){
+  const sender=document.createElement("div");
+  sender.className="msgsender";sender.textContent=username||"Kullanıcı";
+  bubble.append(sender);
+ }
+ const content=document.createElement("div");
+ content.textContent=msg.content;
+ const time=document.createElement("div");
+ time.className="msgtime";
+ time.textContent=new Date(msg.created_at).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+ bubble.append(content,time);
+ $("messages").append(bubble);
+}
 
-  if(error){
-    console.error("Mesajlar yüklenemedi:",error);
-    return;
-  }
+async function loadPrivateMessages(){
+ if(!selectedChat||selectedChat.type!=="private")return;
+ const target=selectedChat.id;
+ const {data,error}=await db.from("messages").select("*")
+  .or(`and(sender_id.eq.${myId},receiver_id.eq.${target}),and(sender_id.eq.${target},receiver_id.eq.${myId})`)
+  .order("created_at",{ascending:true}).limit(500);
+ if(error){console.error(error);return}
+ if(selectedChat?.type!=="private"||selectedChat.id!==target)return;
+ const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+ box.innerHTML="";
+ (data||[]).forEach(m=>addMessage(m));
+ if(wasBottom)box.scrollTop=box.scrollHeight;
+ await markPrivateRead();
+}
 
-  const box=$("messages");
-  const oldCount=box.children.length;
-  box.innerHTML="";
-
-  (data||[]).forEach(msg=>{
-    const bubble=document.createElement("div");
-    bubble.className="msg "+(msg.sender_id===myId?"mine":"theirs");
-
-    const content=document.createElement("div");
-    content.textContent=msg.content;
-
-    const time=document.createElement("div");
-    time.className="msgtime";
-    time.textContent=new Date(msg.created_at).toLocaleTimeString("tr-TR",{
-      hour:"2-digit",minute:"2-digit"
-    });
-
-    bubble.append(content,time);
-    box.append(bubble);
-  });
-
-  if((data||[]).length>oldCount || oldCount===0){
-    box.scrollTop=box.scrollHeight;
-  }
-
-  // Sohbet açıkken gelen yeni mesajları da okundu işaretle.
-  await markAsRead();
+async function loadGroupMessages(){
+ if(!selectedChat||selectedChat.type!=="group")return;
+ const target=selectedChat.id;
+ const {data,error}=await db.from("group_messages").select("*")
+  .eq("group_id",target).order("created_at",{ascending:true}).limit(500);
+ if(error){console.error("Grup mesajları:",error);return}
+ if(selectedChat?.type!=="group"||selectedChat.id!==target)return;
+ const senderIds=[...new Set((data||[]).map(m=>m.sender_id))];
+ let nameMap=new Map();
+ if(senderIds.length){
+  const {data:profiles}=await db.from("profiles").select("id,username").in("id",senderIds);
+  nameMap=new Map((profiles||[]).map(p=>[p.id,p.username]));
+ }
+ const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+ box.innerHTML="";
+ (data||[]).forEach(m=>addMessage(m,nameMap.get(m.sender_id)));
+ if(wasBottom)box.scrollTop=box.scrollHeight;
+ await markGroupRead();
 }
 
 async function sendMessage(){
-  if(!selectedUser) return;
-
-  const input=$("messageInput");
-  const content=input.value;
-
-  if(!content.trim()) return;
-
-  $("sendBtn").disabled=true;
-
-  try{
-    const {error} = await db.from("messages").insert({
-      sender_id:myId,
-      receiver_id:selectedUser.id,
-      content:content
-    });
-
-    if(error) throw error;
-
-    input.value="";
-    await loadMessages();
-    await loadContacts();
-  }catch(error){
-    toast("Mesaj gönderilemedi: "+error.message);
-    console.error(error);
-  }finally{
-    $("sendBtn").disabled=false;
-    input.focus();
+ if(!selectedChat)return;
+ const input=$("messageInput"),content=input.value;
+ if(!content.trim())return;
+ $("sendBtn").disabled=true;
+ try{
+  let result;
+  if(selectedChat.type==="private"){
+   result=await db.from("messages").insert({
+    sender_id:myId,receiver_id:selectedChat.id,content
+   });
+  }else{
+   result=await db.from("group_messages").insert({
+    group_id:selectedChat.id,sender_id:myId,content
+   });
   }
+  if(result.error)throw result.error;
+  input.value="";
+  if(selectedChat.type==="private")await loadPrivateMessages();
+  else await loadGroupMessages();
+  await refreshAll();
+ }catch(e){toast("Mesaj gönderilemedi: "+e.message);console.error(e)}
+ finally{$("sendBtn").disabled=false;input.focus()}
 }
 
 $("messageInput").addEventListener("keydown",e=>{
-  if(e.key==="Enter" && !e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
+ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}
+});
+$("usernameInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")register()
 });
 
-$("usernameInput").addEventListener("keydown",e=>{
-  if(e.key==="Enter") register();
+function openGroupModal(){
+ selectedMembers=new Set();
+ $("groupName").value="";
+ $("groupSearch").value="";
+ $("groupModal").classList.add("show");
+ loadGroupUsers();
+ updateMemberCount();
+}
+function closeGroupModal(){$("groupModal").classList.remove("show")}
+
+function updateMemberCount(){
+ const count=selectedMembers.size+1;
+ $("memberCount").textContent=`Seçilen kişi: ${count} / 10 (sen dahil)`;
+ $("memberCount").style.color=count>=3&&count<=10?"#39df9b":"#9da5ba";
+}
+
+async function loadGroupUsers(){
+ try{
+  const {data,error}=await db.from("profiles").select("id,username").neq("id",myId).order("username").limit(500);
+  if(error)throw error;
+  groupUsers=data||[];
+  renderGroupUsers();
+ }catch(e){
+  $("groupUserList").innerHTML='<div class="emptylist">Kullanıcılar yüklenemedi: '+escapeHTML(e.message)+'</div>';
+ }
+}
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function renderGroupUsers(){
+ const q=$("groupSearch").value.trim().toLocaleLowerCase("tr");
+ const list=$("groupUserList");list.innerHTML="";
+ const filtered=groupUsers.filter(u=>u.username.toLocaleLowerCase("tr").includes(q));
+ if(!filtered.length){list.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';return}
+ filtered.forEach(u=>{
+  const row=document.createElement("div");
+  row.className="select-user"+(selectedMembers.has(u.id)?" chosen":"");
+  const av=document.createElement("div");av.className="avatar";av.textContent=u.username[0].toUpperCase();
+  const name=document.createElement("span");name.textContent=u.username;
+  const check=document.createElement("span");check.className="checkmark";check.textContent=selectedMembers.has(u.id)?"✓":"";
+  row.append(av,name,check);
+  row.onclick=()=>{
+   if(selectedMembers.has(u.id))selectedMembers.delete(u.id);
+   else{
+    if(selectedMembers.size>=9){toast("En fazla 10 kişi olabilir (sen dahil).");return}
+    selectedMembers.add(u.id);
+   }
+   updateMemberCount();renderGroupUsers();
+  };
+  list.append(row);
+ });
+}
+
+$("groupSearch").addEventListener("input",()=>{
+ clearTimeout(groupSearchTimer);
+ groupSearchTimer=setTimeout(renderGroupUsers,150);
 });
+
+async function createGroup(){
+ const name=$("groupName").value.trim();
+ const count=selectedMembers.size+1;
+ if(name.length<1||name.length>40){toast("Grup adı 1-40 karakter olmalı.");return}
+ if(count<3){toast("Grup kurmak için en az 3 kişi gerekli (sen dahil).");return}
+ if(count>10){toast("En fazla 10 kişi seçebilirsin.");return}
+ $("createGroupBtn").disabled=true;
+ try{
+  const {data,error}=await db.rpc("create_chat_group",{
+   p_name:name,
+   p_member_ids:[...selectedMembers]
+  });
+  if(error)throw error;
+  closeGroupModal();
+  toast("Grup oluşturuldu!");
+  await refreshAll();
+  const group=groups.find(g=>g.id===data);
+  if(group)await openGroup(group);
+ }catch(e){
+  toast("Grup oluşturulamadı: "+e.message);
+  console.error(e);
+ }finally{$("createGroupBtn").disabled=false}
+}
 
 start();
 </script>
