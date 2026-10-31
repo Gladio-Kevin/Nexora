@@ -1,92 +1,131 @@
 
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" translate="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nexora Sohbet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
+<meta name="robots" content="noindex">
+<title>Nexora</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#202124}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#10131c;color:#f4f5fa}
+body{overflow:hidden}
 button,input{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:12px 16px;background:#2563eb;color:white}
-button:disabled{opacity:.5;cursor:not-allowed}
-input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;outline:none}
-input:focus{border-color:#2563eb}
-#login{max-width:390px;margin:90px auto;padding:25px;background:white;border-radius:16px;box-shadow:0 3px 18px #0001}
-#login h1{text-align:center;color:#2563eb}
-#login button{width:100%;margin-top:12px}
-#app{display:none;max-width:1100px;height:100dvh;margin:auto;background:white}
-header{height:60px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
-header strong{font-size:21px;color:#2563eb}
-#layout{display:flex;height:calc(100% - 60px)}
-#sidebar{width:320px;border-right:1px solid #eee;padding:15px;overflow:auto}
-#sidebar h3{margin:8px 0 15px}
-#search{margin-bottom:12px}
-.user{padding:13px;border-radius:9px;cursor:pointer;border-bottom:1px solid #eee}
-.user:hover,.user.active{background:#eff6ff}
-#chat{flex:1;display:flex;flex-direction:column;min-width:0}
-#chatTitle{padding:16px;border-bottom:1px solid #eee;font-weight:bold}
-#messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:75%;padding:11px 14px;border-radius:13px;background:#f0f0f0;overflow-wrap:anywhere;white-space:pre-wrap}
-.msg.mine{align-self:flex-end;background:#dbeafe}
-.msg small{display:block;color:#777;font-size:10px;margin-top:5px}
-#sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
-#sendArea input{flex:1;min-width:0}
-#sendArea button{padding:0 20px}
-#status{font-size:12px;color:#777;text-align:center;padding:8px;overflow-wrap:anywhere}
-#error{color:#c62828;font-size:13px;margin-top:12px;overflow-wrap:anywhere}
-#logout{background:#eee;color:#333;padding:8px 12px}
-#empty{margin:auto;text-align:center;color:#888;padding:20px}
-.hint{font-size:12px;color:#888;padding:10px}
+button{cursor:pointer;border:0}
+#app{height:100dvh;display:flex;flex-direction:column}
+header{height:62px;background:#191e2b;border-bottom:1px solid #2b3141;display:flex;align-items:center;padding:0 18px;justify-content:space-between}
+.logo{font-size:23px;font-weight:800;color:#8b91ff;letter-spacing:.5px}
+#status{font-size:12px;color:#9da5ba}
+.screen{display:none;flex:1;min-height:0}
+.screen.active{display:flex}
+#authScreen{align-items:center;justify-content:center;padding:20px}
+.authbox{width:100%;max-width:370px;background:#191e2b;border:1px solid #30374a;border-radius:17px;padding:25px}
+.authbox h2{margin:0 0 8px}
+.muted{color:#9da5ba;font-size:13px;line-height:1.5}
+input{width:100%;background:#101521;color:white;border:1px solid #343c50;border-radius:10px;padding:13px;outline:none;margin:8px 0}
+input:focus{border-color:#858bff}
+.primary{background:#777eff;color:white;border-radius:10px;padding:13px;width:100%;font-weight:700;margin-top:8px}
+.secondary{background:#292f40;color:#e9eaff;border-radius:10px;padding:12px;width:100%;margin-top:9px}
+#mainScreen{flex-direction:row;min-height:0}
+#sidebar{width:310px;min-width:270px;background:#191e2b;border-right:1px solid #30374a;display:flex;flex-direction:column;min-height:0}
+.sidehead{padding:17px;border-bottom:1px solid #30374a}
+.sidehead h3{margin:0 0 8px}
+#search{margin:8px 0 0}
+#contactList{overflow-y:auto;flex:1;padding:8px}
+.contact{display:flex;align-items:center;gap:11px;padding:12px;border-radius:11px;cursor:pointer;margin-bottom:4px}
+.contact:hover,.contact.selected{background:#292f40}
+.avatar{width:39px;height:39px;border-radius:50%;background:#555ed0;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}
+.contactinfo{flex:1;min-width:0}
+.contactname{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lastmsg{font-size:12px;color:#9da5ba;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{background:#ff4058;color:white;min-width:21px;height:21px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;padding:0 6px}
+#chatPanel{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+#chatEmpty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:#9da5ba;padding:20px}
+#chatHeader{height:62px;border-bottom:1px solid #30374a;display:flex;align-items:center;padding:0 16px;gap:10px}
+#chatName{font-weight:bold}
+#messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:min(78%,500px);padding:11px 13px;border-radius:13px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4}
+.mine{background:#5962d7;align-self:flex-end;border-bottom-right-radius:4px}
+.theirs{background:#292f40;align-self:flex-start;border-bottom-left-radius:4px}
+.msgtime{font-size:10px;opacity:.65;margin-top:5px;text-align:right}
+#sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #30374a}
+#messageInput{margin:0;flex:1;min-width:0}
+#sendBtn{background:#777eff;color:white;border-radius:10px;padding:0 18px;font-weight:bold}
+#backBtn{display:none;background:#292f40;color:white;border-radius:8px;padding:8px 11px}
+.emptylist{text-align:center;color:#8d96ac;font-size:13px;padding:25px 12px}
+#searchResults{border-bottom:1px solid #30374a;max-height:190px;overflow-y:auto}
+.result{padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.result:hover{background:#292f40}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343b50;color:white;padding:12px 17px;border-radius:10px;display:none;z-index:5;max-width:90%;font-size:13px}
 @media(max-width:650px){
- #sidebar{width:38%;padding:9px}
- #chat{width:62%}
- #messages{padding:10px}
- .msg{max-width:90%}
- header{padding:0 12px}
- #sidebar input{padding:10px 7px}
+ #sidebar{width:100%;min-width:0;border:0}
+ #chatPanel{display:none}
+ #mainScreen.chat-open #sidebar{display:none}
+ #mainScreen.chat-open #chatPanel{display:flex}
+ #backBtn{display:block}
+ header{height:55px}
 }
 </style>
 </head>
-<body>
 
-<div id="login">
-<h1>Nexora</h1>
-<p style="text-align:center;color:#777">Kullanıcı adını oluştur ve sohbete başla.</p>
-<input id="username" maxlength="20" placeholder="Kullanıcı adı (3-20 karakter)" autocomplete="off" autocorrect="off" spellcheck="false">
-<button id="register">Devam et</button>
-<div id="error"></div>
-</div>
-
+<body translate="no">
 <div id="app">
 <header>
-<strong>Nexora</strong>
-<div>
-<span id="myName"></span>
-<button id="logout">Çıkış</button>
-</div>
+  <div class="logo">NEXORA</div>
+  <div id="status">Bağlanıyor...</div>
 </header>
 
-<div id="layout">
-<aside id="sidebar">
-<h3>Kişiler</h3>
-<input id="search" placeholder="Kullanıcı adı ara..." autocomplete="off" autocorrect="off" spellcheck="false">
-<div id="users" class="hint">Kişi bulmak için kullanıcı adı ara.</div>
-</aside>
+<section id="authScreen" class="screen active">
+  <div class="authbox">
+    <h2 id="authTitle">Nexora'ya Hoş Geldin</h2>
+    <p class="muted" id="authInfo">Bir kullanıcı adı belirleyerek sohbete başla.</p>
+    <input id="usernameInput" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+    <button class="primary" id="authBtn" onclick="register()">Hesap oluştur</button>
+    <p class="muted" id="authError"></p>
+  </div>
+</section>
 
-<main id="chat">
-<div id="chatTitle">Bir kişi seç</div>
-<div id="messages"><div id="empty">Sohbet etmek için bir kullanıcı ara.</div></div>
-<div id="status"></div>
-<div id="sendArea">
-<input id="messageInput" placeholder="Mesajını yaz..." maxlength="2000" disabled autocomplete="off" autocorrect="off" spellcheck="false">
-<button id="send" disabled>Gönder</button>
+<section id="mainScreen" class="screen">
+  <aside id="sidebar">
+    <div class="sidehead">
+      <h3>Mesajlar</h3>
+      <div class="muted" id="myUsername"></div>
+      <input id="search" placeholder="Kişi ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+    </div>
+    <div id="searchResults"></div>
+    <div id="contactList"><div class="emptylist">Henüz sohbetin yok.</div></div>
+  </aside>
+
+  <main id="chatPanel">
+    <div id="chatEmpty">
+      <div>
+        <div style="font-size:42px">✉</div>
+        <h3>Nexora Sohbet</h3>
+        <p>Bir kişi seç veya yeni bir kullanıcı ara.</p>
+      </div>
+    </div>
+
+    <div id="chatHeader" style="display:none">
+      <button id="backBtn" onclick="closeChat()">←</button>
+      <div class="avatar" id="chatAvatar">?</div>
+      <div id="chatName"></div>
+    </div>
+
+    <div id="messages" style="display:none" translate="no"></div>
+
+    <div id="sendArea" style="display:none">
+      <input id="messageInput" placeholder="Mesajını yaz..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+      <button id="sendBtn" onclick="sendMessage()">Gönder</button>
+    </div>
+  </main>
+</section>
 </div>
-</main>
-</div>
-</div>
+
+<div id="toast"></div>
 
 <script>
 const SUPABASE_URL = "https://qddemnxngjjiwcmisqtb.supabase.co";
@@ -97,31 +136,36 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let myId = null;
 let myProfile = null;
 let selectedUser = null;
-let refreshTimer = null;
+let contacts = [];
 let searchTimer = null;
-let sending = false;
+let refreshTimer = null;
+let lastMessageCount = 0;
 
 const $ = id => document.getElementById(id);
 
-function showError(message) {
-  $("error").textContent = message;
+function toast(message){
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(()=>el.style.display="none",3000);
 }
 
-function showApp() {
-  $("login").style.display = "none";
-  $("app").style.display = "block";
-  $("myName").textContent = myProfile.username;
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  $(id).classList.add("active");
 }
 
-async function start() {
-  $("register").disabled = true;
-  showError("Bağlanılıyor...");
+function showError(message){
+  $("authError").textContent = message;
+}
 
-  try {
+async function start(){
+  try{
     let {data:{session},error} = await db.auth.getSession();
     if(error) throw error;
 
-    if(!session) {
+    if(!session){
       const result = await db.auth.signInAnonymously();
       if(result.error) throw result.error;
       session = result.data.session;
@@ -129,253 +173,368 @@ async function start() {
 
     myId = session.user.id;
 
-    const result = await db.from("profiles")
+    const {data:profile,error:profileError} = await db
+      .from("profiles")
       .select("*")
       .eq("id",myId)
       .maybeSingle();
 
-    if(result.error) throw result.error;
+    if(profileError) throw profileError;
 
-    if(result.data) {
-      myProfile = result.data;
-      enterApp();
-    } else {
-      showError("");
-      $("register").disabled = false;
+    if(!profile){
+      $("status").textContent = "Kullanıcı oluştur";
+      showScreen("authScreen");
+      return;
     }
 
-  } catch(e) {
-    showError("Bağlantı hatası: "+e.message);
-    $("register").disabled = false;
+    myProfile = profile;
+    enterApp();
+  }catch(error){
+    $("status").textContent = "Bağlantı hatası";
+    showError(error.message);
+    showScreen("authScreen");
   }
 }
 
-function enterApp() {
-  showApp();
+async function register(){
+  const username = $("usernameInput").value.trim();
 
-  // Başlangıçta kullanıcıların tamamını gösterme.
-  $("users").textContent = "Kişi bulmak için kullanıcı adı ara.";
-
-  if(refreshTimer) clearInterval(refreshTimer);
-
-  refreshTimer = setInterval(() => {
-    if(selectedUser) loadMessages();
-  },3000);
-}
-
-async function register() {
-  const username = $("username").value.trim();
-
-  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-    showError("Kullanıcı adı 3-20 karakter olmalı. İngilizce harf, rakam ve _ kullanabilirsin.");
+  if(username.length < 3){
+    showError("Kullanıcı adı en az 3 karakter olmalı.");
     return;
   }
 
-  $("register").disabled = true;
-  showError("Kullanıcı adı kontrol ediliyor...");
+  if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){
+    showError("Kullanıcı adında boşluk veya özel karakter kullanma.");
+    return;
+  }
 
-  try {
-    const check = await db.from("profiles")
-      .select("id,username")
+  $("authBtn").disabled = true;
+  showError("Kontrol ediliyor...");
+
+  try{
+    const {data:existing,error:checkError} = await db
+      .from("profiles")
+      .select("id")
       .ilike("username",username)
       .limit(1);
 
-    if(check.error) throw check.error;
-
-    if(check.data && check.data.length>0) {
-      showError("Bu kullanıcı adı zaten alınmış.");
-      $("register").disabled = false;
+    if(checkError) throw checkError;
+    if(existing && existing.length){
+      showError("Bu kullanıcı adı zaten kullanılıyor.");
       return;
     }
 
-    const result = await db.from("profiles")
-      .insert({id:myId,username:username})
+    const {data,error} = await db
+      .from("profiles")
+      .insert({id:myId,username})
       .select()
       .single();
 
-    if(result.error) {
-      if(result.error.code==="23505") {
-        showError("Bu kullanıcı adı zaten alınmış.");
-      } else {
-        showError("Kayıt hatası ("+(result.error.code||"bilinmiyor")+"): "+result.error.message);
-      }
+    if(error) throw error;
 
-      $("register").disabled = false;
+    myProfile = data;
+    enterApp();
+  }catch(error){
+    showError("Hata: " + error.message);
+  }finally{
+    $("authBtn").disabled = false;
+  }
+}
+
+function enterApp(){
+  $("status").textContent = "Çevrimiçi";
+  $("myUsername").textContent = "@" + myProfile.username;
+  showScreen("mainScreen");
+  loadContacts();
+  refreshTimer = setInterval(refreshAll,3000);
+}
+
+async function refreshAll(){
+  await loadContacts();
+  if(selectedUser) await loadMessages();
+}
+
+async function loadContacts(){
+  try{
+    const {data:msgs,error} = await db
+      .from("messages")
+      .select("id,sender_id,receiver_id,content,created_at,read_at")
+      .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
+      .order("created_at",{ascending:false})
+      .limit(1000);
+
+    if(error) throw error;
+
+    const latest = new Map();
+    const unread = new Map();
+
+    for(const msg of msgs || []){
+      const otherId = msg.sender_id === myId ? msg.receiver_id : msg.sender_id;
+
+      if(!latest.has(otherId)) latest.set(otherId,msg);
+
+      if(msg.receiver_id === myId && !msg.read_at){
+        unread.set(otherId,(unread.get(otherId)||0)+1);
+      }
+    }
+
+    const ids = [...latest.keys()];
+
+    if(ids.length === 0){
+      contacts = [];
+      renderContacts();
       return;
     }
 
-    myProfile = result.data;
-    enterApp();
+    const {data:profiles,error:usersError} = await db
+      .from("profiles")
+      .select("id,username")
+      .in("id",ids);
 
-  } catch(e) {
-    showError("Kayıt hatası: "+e.message);
-    $("register").disabled = false;
+    if(usersError) throw usersError;
+
+    const profileMap = new Map((profiles||[]).map(p=>[p.id,p]));
+
+    contacts = ids.map(id=>{
+      const p = profileMap.get(id);
+      const msg = latest.get(id);
+      if(!p) return null;
+      return {
+        ...p,
+        lastMessage:msg.content,
+        lastTime:msg.created_at,
+        unread:unread.get(id)||0
+      };
+    }).filter(Boolean);
+
+    renderContacts();
+  }catch(error){
+    console.error("Kişiler yüklenemedi:",error);
   }
 }
 
-async function loadUsers() {
-  const q = $("search").value.trim();
+function renderContacts(){
+  const list = $("contactList");
 
-  // Arama kutusu boşsa hiçbir kullanıcıyı listeleme.
-  if(!q) {
-    $("users").textContent = "Kişi bulmak için kullanıcı adı ara.";
+  if(!contacts.length){
+    list.innerHTML = '<div class="emptylist">Henüz sohbetin yok.<br>Yeni kişi bulmak için arama yap.</div>';
     return;
   }
 
-  if(q.length<2) {
-    $("users").textContent = "Aramak için en az 2 karakter yaz.";
-    return;
-  }
+  list.innerHTML = "";
 
-  const {data,error} = await db.from("profiles")
-    .select("id,username")
-    .neq("id",myId)
-    .ilike("username","%"+q.replace(/[%_,]/g,"")+"%")
-    .order("username")
-    .limit(30);
+  contacts.forEach(user=>{
+    const item = document.createElement("div");
+    item.className = "contact" + (selectedUser?.id===user.id ? " selected":"");
 
-  if(error) {
-    $("users").textContent = "Arama hatası: "+error.message;
-    return;
-  }
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = user.username.charAt(0).toUpperCase();
 
-  $("users").innerHTML = "";
+    const info = document.createElement("div");
+    info.className = "contactinfo";
 
-  if(!data || !data.length) {
-    $("users").textContent = "Kullanıcı bulunamadı.";
-    return;
-  }
+    const name = document.createElement("div");
+    name.className = "contactname";
+    name.textContent = user.username;
 
-  data.forEach(user => {
-    const div = document.createElement("div");
-    div.className = "user"+(selectedUser?.id===user.id?" active":"");
-    div.textContent = user.username;
-    div.onclick = () => openChat(user);
-    $("users").appendChild(div);
+    const last = document.createElement("div");
+    last.className = "lastmsg";
+    last.textContent = user.lastMessage;
+
+    info.append(name,last);
+    item.append(avatar,info);
+
+    if(user.unread>0){
+      const badge = document.createElement("div");
+      badge.className = "unread";
+      badge.textContent = user.unread>99 ? "99+" : user.unread;
+      item.append(badge);
+    }
+
+    item.onclick = ()=>openChat(user);
+    list.append(item);
   });
 }
 
-async function openChat(user) {
-  selectedUser = user;
+$("search").addEventListener("input",()=>{
+  clearTimeout(searchTimer);
+  const q = $("search").value.trim();
+  if(q.length<2){
+    $("searchResults").innerHTML="";
+    return;
+  }
+  searchTimer = setTimeout(()=>searchUsers(q),300);
+});
 
-  $("chatTitle").textContent = user.username;
-  $("messageInput").disabled = false;
-  $("send").disabled = false;
-  $("messages").innerHTML = '<div id="empty">Mesajlar yükleniyor...</div>';
-  $("status").textContent = "";
+async function searchUsers(q){
+  try{
+    const {data,error} = await db
+      .from("profiles")
+      .select("id,username")
+      .ilike("username",`%${q}%`)
+      .neq("id",myId)
+      .limit(20);
 
-  await loadUsers();
-  await loadMessages();
+    if(error) throw error;
+
+    const results = $("searchResults");
+    results.innerHTML="";
+
+    if(!data || !data.length){
+      results.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
+      return;
+    }
+
+    data.forEach(user=>{
+      const row=document.createElement("div");
+      row.className="result";
+
+      const avatar=document.createElement("div");
+      avatar.className="avatar";
+      avatar.textContent=user.username.charAt(0).toUpperCase();
+
+      const name=document.createElement("b");
+      name.textContent=user.username;
+
+      row.append(avatar,name);
+      row.onclick=()=>openChat(user);
+      results.append(row);
+    });
+  }catch(error){
+    console.error("Arama hatası:",error);
+    toast("Arama hatası: "+error.message);
+  }
 }
 
-async function loadMessages() {
+async function openChat(user){
+  selectedUser=user;
+  $("mainScreen").classList.add("chat-open");
+  $("chatEmpty").style.display="none";
+  $("chatHeader").style.display="flex";
+  $("messages").style.display="flex";
+  $("sendArea").style.display="flex";
+  $("chatName").textContent=user.username;
+  $("chatAvatar").textContent=user.username.charAt(0).toUpperCase();
+  $("messageInput").focus();
+
+  await markAsRead();
+  await loadMessages();
+  await loadContacts();
+
+  $("searchResults").innerHTML="";
+  $("search").value="";
+}
+
+async function closeChat(){
+  selectedUser=null;
+  $("mainScreen").classList.remove("chat-open");
+  $("chatEmpty").style.display="flex";
+  $("chatHeader").style.display="none";
+  $("messages").style.display="none";
+  $("sendArea").style.display="none";
+  await loadContacts();
+}
+
+async function markAsRead(){
   if(!selectedUser) return;
 
-  const otherId = selectedUser.id;
-
-  const {data,error} = await db.from("messages")
-    .select("*")
-    .or(
-      `and(sender_id.eq.${myId},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${myId})`
-    )
-    .order("created_at",{ascending:true})
-    .limit(200);
-
-  if(error) {
-    $("status").textContent = "Mesaj yükleme hatası ("+(error.code||"")+"): "+error.message;
-    return;
-  }
-
-  const box = $("messages");
-  box.innerHTML = "";
-
-  if(!data || !data.length) {
-    box.innerHTML = '<div id="empty">Henüz mesaj yok. İlk mesajı sen gönder!</div>';
-    $("status").textContent = "";
-    return;
-  }
-
-  data.forEach(message => {
-    const div = document.createElement("div");
-    div.className = "msg"+(message.sender_id===myId?" mine":"");
-
-    const content = document.createElement("div");
-    // Mesajı HTML olarak değil, aynen metin olarak göster.
-    content.textContent = message.content;
-
-    const time = document.createElement("small");
-    time.textContent = new Date(message.created_at).toLocaleString("tr-TR");
-
-    div.append(content,time);
-    box.appendChild(div);
+  const {error} = await db.rpc("mark_messages_read",{
+    other_user_id:selectedUser.id
   });
 
-  box.scrollTop = box.scrollHeight;
-  $("status").textContent = "";
+  if(error){
+    console.error("Okundu bilgisi güncellenemedi:",error);
+  }
 }
 
-async function sendMessage() {
-  if(sending || !selectedUser) return;
+async function loadMessages(){
+  if(!selectedUser) return;
 
-  const content = $("messageInput").value;
+  const {data,error} = await db
+    .from("messages")
+    .select("*")
+    .or(
+      `and(sender_id.eq.${myId},receiver_id.eq.${selectedUser.id}),and(sender_id.eq.${selectedUser.id},receiver_id.eq.${myId})`
+    )
+    .order("created_at",{ascending:true})
+    .limit(500);
+
+  if(error){
+    console.error("Mesajlar yüklenemedi:",error);
+    return;
+  }
+
+  const box=$("messages");
+  const oldCount=box.children.length;
+  box.innerHTML="";
+
+  (data||[]).forEach(msg=>{
+    const bubble=document.createElement("div");
+    bubble.className="msg "+(msg.sender_id===myId?"mine":"theirs");
+
+    const content=document.createElement("div");
+    content.textContent=msg.content;
+
+    const time=document.createElement("div");
+    time.className="msgtime";
+    time.textContent=new Date(msg.created_at).toLocaleTimeString("tr-TR",{
+      hour:"2-digit",minute:"2-digit"
+    });
+
+    bubble.append(content,time);
+    box.append(bubble);
+  });
+
+  if((data||[]).length>oldCount || oldCount===0){
+    box.scrollTop=box.scrollHeight;
+  }
+
+  // Sohbet açıkken gelen yeni mesajları da okundu işaretle.
+  await markAsRead();
+}
+
+async function sendMessage(){
+  if(!selectedUser) return;
+
+  const input=$("messageInput");
+  const content=input.value;
 
   if(!content.trim()) return;
 
-  if(content.length>2000) {
-    $("status").textContent = "Mesaj en fazla 2000 karakter olabilir.";
-    return;
-  }
+  $("sendBtn").disabled=true;
 
-  sending = true;
-  $("send").disabled = true;
-  $("status").textContent = "Gönderiliyor...";
-
-  try {
+  try{
     const {error} = await db.from("messages").insert({
       sender_id:myId,
       receiver_id:selectedUser.id,
       content:content
     });
 
-    if(error) {
-      $("status").textContent =
-        "Gönderme hatası ("+(error.code||"kodsuz")+"): "+error.message;
-      return;
-    }
+    if(error) throw error;
 
-    // Yalnızca başarılı gönderimden sonra alanı temizle.
-    $("messageInput").value = "";
-    $("status").textContent = "Mesaj gönderildi.";
+    input.value="";
     await loadMessages();
-
-  } catch(e) {
-    $("status").textContent = "Beklenmeyen hata: "+e.message;
-  } finally {
-    sending = false;
-    $("send").disabled = !selectedUser;
+    await loadContacts();
+  }catch(error){
+    toast("Mesaj gönderilemedi: "+error.message);
+    console.error(error);
+  }finally{
+    $("sendBtn").disabled=false;
+    input.focus();
   }
 }
 
-$("register").addEventListener("click",register);
-
-$("search").addEventListener("input",() => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(loadUsers,250);
-});
-
-$("send").addEventListener("click",sendMessage);
-
-$("messageInput").addEventListener("keydown",e => {
-  if(e.key==="Enter") {
+$("messageInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter" && !e.shiftKey){
     e.preventDefault();
     sendMessage();
   }
 });
 
-$("logout").addEventListener("click",async () => {
-  if(!confirm("Bu cihazdaki oturumdan çıkmak istiyor musun?")) return;
-  await db.auth.signOut();
-  location.reload();
+$("usernameInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") register();
 });
 
 start();
