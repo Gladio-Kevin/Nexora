@@ -251,49 +251,78 @@ async function refreshAll(){
  }finally{busy=false}
 }
 
+/* DÜZELTİLDİ: Özel sohbetlerde artık tüm kayıtlı kullanıcılar listelenir. */
 async function loadContacts(){
- try{
-  const {data:msgs,error}=await db.from("messages")
+ try {
+  const {data:profiles,error:pe}=await db
+   .from("profiles")
+   .select("id,username")
+   .neq("id",myId)
+   .order("username")
+   .limit(500);
+
+  if(pe)throw pe;
+
+  const {data:msgs,error:me}=await db
+   .from("messages")
    .select("id,sender_id,receiver_id,content,created_at,read_at")
    .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
-   .order("created_at",{ascending:false}).limit(1000);
-  if(error)throw error;
+   .order("created_at",{ascending:false})
+   .limit(1000);
+
+  if(me)throw me;
 
   const latest=new Map(),unread=new Map();
-  for(const m of msgs||[]){
+
+  for(const m of (msgs||[])){
    const other=m.sender_id===myId?m.receiver_id:m.sender_id;
    if(!latest.has(other))latest.set(other,m);
-   if(m.receiver_id===myId&&!m.read_at)unread.set(other,(unread.get(other)||0)+1);
+   if(m.receiver_id===myId&&!m.read_at){
+    unread.set(other,(unread.get(other)||0)+1);
+   }
   }
-  const ids=[...latest.keys()];
-  if(!ids.length){contacts=[];renderContacts();return}
-  const {data:profiles,error:pe}=await db.from("profiles").select("id,username").in("id",ids);
-  if(pe)throw pe;
-  const map=new Map((profiles||[]).map(p=>[p.id,p]));
-  contacts=ids.map(id=>{
-   const p=map.get(id),m=latest.get(id);
-   return p?{...p,lastMessage:m.content,lastTime:m.created_at,unread:unread.get(id)||0}:null;
-  }).filter(Boolean);
+
+  contacts=(profiles||[]).map(p=>{
+   const last=latest.get(p.id);
+   return {
+    ...p,
+    lastMessage:last?last.content:"Sohbet başlat",
+    lastTime:last?last.created_at:null,
+    unread:unread.get(p.id)||0
+   };
+  });
+
   renderContacts();
- }catch(e){console.error("Özel kişiler:",e)}
+ }catch(e){
+  console.error("Kişiler yüklenemedi:",e);
+  toast("Kişiler yüklenemedi: "+e.message);
+ }
 }
 
 async function loadGroups(){
  try{
   const {data:members,error:me}=await db.from("group_members").select("group_id").eq("user_id",myId);
   if(me)throw me;
+
   const ids=[...new Set((members||[]).map(x=>x.group_id))];
   if(!ids.length){groups=[];renderContacts();return}
+
   const {data:gs,error:ge}=await db.from("chat_groups").select("id,name,owner_id,created_at").in("id",ids);
   if(ge)throw ge;
 
-  const {data:gm,error:gme}=await db.from("group_messages").select("id,group_id,sender_id,content,created_at").in("group_id",ids).order("created_at",{ascending:false}).limit(1000);
+  const {data:gm,error:gme}=await db.from("group_messages")
+   .select("id,group_id,sender_id,content,created_at")
+   .in("group_id",ids)
+   .order("created_at",{ascending:false})
+   .limit(1000);
   if(gme)throw gme;
 
   const messageIds=(gm||[]).map(x=>x.id);
   let readSet=new Set();
+
   if(messageIds.length){
-   const {data:reads,error:re}=await db.from("group_message_reads").select("message_id").eq("user_id",myId).in("message_id",messageIds);
+   const {data:reads,error:re}=await db.from("group_message_reads")
+    .select("message_id").eq("user_id",myId).in("message_id",messageIds);
    if(re)throw re;
    readSet=new Set((reads||[]).map(x=>String(x.message_id)));
   }
@@ -304,6 +333,7 @@ async function loadGroups(){
    const unread=own.filter(m=>m.sender_id!==myId&&!readSet.has(String(m.id))).length;
    return {...g,lastMessage:latest?.content||"Henüz mesaj yok",unread};
   }).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
   renderContacts();
  }catch(e){console.error("Gruplar:",e)}
 }
@@ -311,24 +341,32 @@ async function loadGroups(){
 function makeContact(item,type){
  const row=document.createElement("div");
  row.className="contact"+(selectedChat?.type===type&&selectedChat?.id===item.id?" selected":"");
+
  const av=document.createElement("div");
  av.className="avatar"+(type==="group"?" group-avatar":"");
  av.textContent=type==="group"?"G":(item.username||"?").charAt(0).toUpperCase();
+
  const info=document.createElement("div");
  info.className="contactinfo";
+
  const name=document.createElement("div");
  name.className="contactname";
  name.textContent=type==="group"?"▣ "+item.name:item.username;
+
  const last=document.createElement("div");
  last.className="lastmsg";
  last.textContent=item.lastMessage||"Henüz mesaj yok";
- info.append(name,last);row.append(av,info);
+
+ info.append(name,last);
+ row.append(av,info);
+
  if(item.unread>0){
   const badge=document.createElement("div");
   badge.className="unread";
   badge.textContent=item.unread>99?"99+":item.unread;
   row.append(badge);
  }
+
  row.onclick=()=>type==="group"?openGroup(item):openPrivate(item);
  return row;
 }
@@ -336,23 +374,28 @@ function makeContact(item,type){
 function renderContacts(){
  const box=$("contactList");
  box.innerHTML="";
+
  const title1=document.createElement("div");
  title1.className="section-title";
  title1.textContent="GRUPLAR";
  box.append(title1);
+
  if(!groups.length){
   const e=document.createElement("div");
-  e.className="emptylist";e.textContent="Henüz grubun yok.";
+  e.className="emptylist";
+  e.textContent="Henüz grubun yok.";
   box.append(e);
  }else groups.forEach(g=>box.append(makeContact(g,"group")));
 
  const title2=document.createElement("div");
  title2.className="section-title";
- title2.textContent="ÖZEL MESAJLAR";
+ title2.textContent="ÖZEL SOHBETLER";
  box.append(title2);
+
  if(!contacts.length){
   const e=document.createElement("div");
-  e.className="emptylist";e.textContent="Henüz özel sohbetin yok. Kişi arayabilirsin.";
+  e.className="emptylist";
+  e.textContent="Henüz başka kayıtlı kullanıcı yok.";
   box.append(e);
  }else contacts.forEach(c=>box.append(makeContact(c,"private")));
 }
@@ -366,15 +409,32 @@ $("search").addEventListener("input",()=>{
 
 async function searchUsers(q){
  try{
-  const {data,error}=await db.from("profiles").select("id,username").ilike("username",`%${q}%`).neq("id",myId).limit(20);
+  const {data,error}=await db.from("profiles")
+   .select("id,username")
+   .ilike("username",`%${q}%`)
+   .neq("id",myId)
+   .limit(20);
   if(error)throw error;
-  const box=$("searchResults");box.innerHTML="";
-  if(!data?.length){box.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';return}
+
+  const box=$("searchResults");
+  box.innerHTML="";
+
+  if(!data?.length){
+   box.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
+   return;
+  }
+
   data.forEach(u=>{
-   const row=document.createElement("div");row.className="result";
-   const av=document.createElement("div");av.className="avatar";av.textContent=u.username[0].toUpperCase();
-   const name=document.createElement("b");name.textContent=u.username;
-   row.append(av,name);row.onclick=()=>openPrivate(u);box.append(row);
+   const row=document.createElement("div");
+   row.className="result";
+   const av=document.createElement("div");
+   av.className="avatar";
+   av.textContent=u.username[0].toUpperCase();
+   const name=document.createElement("b");
+   name.textContent=u.username;
+   row.append(av,name);
+   row.onclick=()=>openPrivate(u);
+   box.append(row);
   });
  }catch(e){toast("Arama hatası: "+e.message)}
 }
@@ -440,16 +500,21 @@ async function markGroupRead(){
 function addMessage(msg,username){
  const bubble=document.createElement("div");
  bubble.className="msg "+(msg.sender_id===myId?"mine":"theirs");
+
  if(selectedChat?.type==="group"&&msg.sender_id!==myId){
   const sender=document.createElement("div");
-  sender.className="msgsender";sender.textContent=username||"Kullanıcı";
+  sender.className="msgsender";
+  sender.textContent=username||"Kullanıcı";
   bubble.append(sender);
  }
+
  const content=document.createElement("div");
  content.textContent=msg.content;
+
  const time=document.createElement("div");
  time.className="msgtime";
  time.textContent=new Date(msg.created_at).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+
  bubble.append(content,time);
  $("messages").append(bubble);
 }
@@ -457,12 +522,16 @@ function addMessage(msg,username){
 async function loadPrivateMessages(){
  if(!selectedChat||selectedChat.type!=="private")return;
  const target=selectedChat.id;
+
  const {data,error}=await db.from("messages").select("*")
   .or(`and(sender_id.eq.${myId},receiver_id.eq.${target}),and(sender_id.eq.${target},receiver_id.eq.${myId})`)
   .order("created_at",{ascending:true}).limit(500);
+
  if(error){console.error(error);return}
  if(selectedChat?.type!=="private"||selectedChat.id!==target)return;
- const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+
+ const box=$("messages");
+ const wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
  box.innerHTML="";
  (data||[]).forEach(m=>addMessage(m));
  if(wasBottom)box.scrollTop=box.scrollHeight;
@@ -472,53 +541,82 @@ async function loadPrivateMessages(){
 async function loadGroupMessages(){
  if(!selectedChat||selectedChat.type!=="group")return;
  const target=selectedChat.id;
+
  const {data,error}=await db.from("group_messages").select("*")
-  .eq("group_id",target).order("created_at",{ascending:true}).limit(500);
+  .eq("group_id",target)
+  .order("created_at",{ascending:true}).limit(500);
+
  if(error){console.error("Grup mesajları:",error);return}
  if(selectedChat?.type!=="group"||selectedChat.id!==target)return;
+
  const senderIds=[...new Set((data||[]).map(m=>m.sender_id))];
  let nameMap=new Map();
+
  if(senderIds.length){
-  const {data:profiles}=await db.from("profiles").select("id,username").in("id",senderIds);
+  const {data:profiles}=await db.from("profiles")
+   .select("id,username").in("id",senderIds);
   nameMap=new Map((profiles||[]).map(p=>[p.id,p.username]));
  }
- const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+
+ const box=$("messages");
+ const wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
  box.innerHTML="";
  (data||[]).forEach(m=>addMessage(m,nameMap.get(m.sender_id)));
  if(wasBottom)box.scrollTop=box.scrollHeight;
+
  await markGroupRead();
 }
 
 async function sendMessage(){
  if(!selectedChat)return;
- const input=$("messageInput"),content=input.value;
+ const input=$("messageInput");
+ const content=input.value;
  if(!content.trim())return;
+
  $("sendBtn").disabled=true;
+
  try{
   let result;
+
   if(selectedChat.type==="private"){
    result=await db.from("messages").insert({
-    sender_id:myId,receiver_id:selectedChat.id,content
+    sender_id:myId,
+    receiver_id:selectedChat.id,
+    content
    });
   }else{
    result=await db.from("group_messages").insert({
-    group_id:selectedChat.id,sender_id:myId,content
+    group_id:selectedChat.id,
+    sender_id:myId,
+    content
    });
   }
+
   if(result.error)throw result.error;
+
   input.value="";
   if(selectedChat.type==="private")await loadPrivateMessages();
   else await loadGroupMessages();
+
   await refreshAll();
- }catch(e){toast("Mesaj gönderilemedi: "+e.message);console.error(e)}
- finally{$("sendBtn").disabled=false;input.focus()}
+ }catch(e){
+  toast("Mesaj gönderilemedi: "+e.message);
+  console.error(e);
+ }finally{
+  $("sendBtn").disabled=false;
+  input.focus();
+ }
 }
 
 $("messageInput").addEventListener("keydown",e=>{
- if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}
+ if(e.key==="Enter"&&!e.shiftKey){
+  e.preventDefault();
+  sendMessage();
+ }
 });
+
 $("usernameInput").addEventListener("keydown",e=>{
- if(e.key==="Enter")register()
+ if(e.key==="Enter")register();
 });
 
 function openGroupModal(){
@@ -529,7 +627,10 @@ function openGroupModal(){
  loadGroupUsers();
  updateMemberCount();
 }
-function closeGroupModal(){$("groupModal").classList.remove("show")}
+
+function closeGroupModal(){
+ $("groupModal").classList.remove("show");
+}
 
 function updateMemberCount(){
  const count=selectedMembers.size+1;
@@ -539,39 +640,67 @@ function updateMemberCount(){
 
 async function loadGroupUsers(){
  try{
-  const {data,error}=await db.from("profiles").select("id,username").neq("id",myId).order("username").limit(500);
+  const {data,error}=await db.from("profiles")
+   .select("id,username")
+   .neq("id",myId)
+   .order("username")
+   .limit(500);
+
   if(error)throw error;
   groupUsers=data||[];
   renderGroupUsers();
  }catch(e){
-  $("groupUserList").innerHTML='<div class="emptylist">Kullanıcılar yüklenemedi: '+escapeHTML(e.message)+'</div>';
+  $("groupUserList").innerHTML="";
+  const errorBox=document.createElement("div");
+  errorBox.className="emptylist";
+  errorBox.textContent="Kullanıcılar yüklenemedi: "+e.message;
+  $("groupUserList").append(errorBox);
  }
-}
-
-function escapeHTML(s){
- return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
 function renderGroupUsers(){
  const q=$("groupSearch").value.trim().toLocaleLowerCase("tr");
- const list=$("groupUserList");list.innerHTML="";
+ const list=$("groupUserList");
+ list.innerHTML="";
+
  const filtered=groupUsers.filter(u=>u.username.toLocaleLowerCase("tr").includes(q));
- if(!filtered.length){list.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';return}
+
+ if(!filtered.length){
+  list.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
+  return;
+ }
+
  filtered.forEach(u=>{
   const row=document.createElement("div");
   row.className="select-user"+(selectedMembers.has(u.id)?" chosen":"");
-  const av=document.createElement("div");av.className="avatar";av.textContent=u.username[0].toUpperCase();
-  const name=document.createElement("span");name.textContent=u.username;
-  const check=document.createElement("span");check.className="checkmark";check.textContent=selectedMembers.has(u.id)?"✓":"";
+
+  const av=document.createElement("div");
+  av.className="avatar";
+  av.textContent=u.username[0].toUpperCase();
+
+  const name=document.createElement("span");
+  name.textContent=u.username;
+
+  const check=document.createElement("span");
+  check.className="checkmark";
+  check.textContent=selectedMembers.has(u.id)?"✓":"";
+
   row.append(av,name,check);
+
   row.onclick=()=>{
-   if(selectedMembers.has(u.id))selectedMembers.delete(u.id);
-   else{
-    if(selectedMembers.size>=9){toast("En fazla 10 kişi olabilir (sen dahil).");return}
+   if(selectedMembers.has(u.id)){
+    selectedMembers.delete(u.id);
+   }else{
+    if(selectedMembers.size>=9){
+     toast("En fazla 10 kişi olabilir (sen dahil).");
+     return;
+    }
     selectedMembers.add(u.id);
    }
-   updateMemberCount();renderGroupUsers();
+   updateMemberCount();
+   renderGroupUsers();
   };
+
   list.append(row);
  });
 }
@@ -584,25 +713,43 @@ $("groupSearch").addEventListener("input",()=>{
 async function createGroup(){
  const name=$("groupName").value.trim();
  const count=selectedMembers.size+1;
- if(name.length<1||name.length>40){toast("Grup adı 1-40 karakter olmalı.");return}
- if(count<3){toast("Grup kurmak için en az 3 kişi gerekli (sen dahil).");return}
- if(count>10){toast("En fazla 10 kişi seçebilirsin.");return}
+
+ if(name.length<1||name.length>40){
+  toast("Grup adı 1-40 karakter olmalı.");
+  return;
+ }
+ if(count<3){
+  toast("Grup kurmak için en az 3 kişi gerekli (sen dahil).");
+  return;
+ }
+ if(count>10){
+  toast("En fazla 10 kişi seçebilirsin.");
+  return;
+ }
+
  $("createGroupBtn").disabled=true;
+
  try{
   const {data,error}=await db.rpc("create_chat_group",{
    p_name:name,
    p_member_ids:[...selectedMembers]
   });
+
   if(error)throw error;
+
   closeGroupModal();
   toast("Grup oluşturuldu!");
   await refreshAll();
+
   const group=groups.find(g=>g.id===data);
   if(group)await openGroup(group);
+
  }catch(e){
   toast("Grup oluşturulamadı: "+e.message);
   console.error(e);
- }finally{$("createGroupBtn").disabled=false}
+ }finally{
+  $("createGroupBtn").disabled=false;
+ }
 }
 
 start();
