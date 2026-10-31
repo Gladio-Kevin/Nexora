@@ -3,347 +3,335 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#fff">
-<title>Nexora</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexora Sohbet</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;color:#202124;background:white}
-header{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;padding:0 16px;gap:16px;position:sticky;top:0;background:white;z-index:2}
-.logo{font-size:27px;font-weight:bold;color:#4285f4;letter-spacing:-1px}
-.logo span{color:#34a853}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#202124}
 button,input{font:inherit}
-button{cursor:pointer}
-.icon{border:0;background:white;font-size:23px;color:#555;padding:8px}
-main{max-width:650px;margin:auto;padding:18px}
-.search{height:49px;border:1px solid #dadce0;border-radius:28px;display:flex;align-items:center;padding:0 15px;gap:10px;margin:15px 0 22px}
-.search:focus-within{box-shadow:0 1px 6px #0002}
-.search input{width:100%;border:0;outline:0;font-size:16px}
-.tabs{display:flex;border-bottom:1px solid #eee}
-.tab{background:white;border:0;padding:13px 17px;color:#666}
-.tab.active{color:#1a73e8;border-bottom:2px solid #1a73e8}
-.person{display:flex;align-items:center;gap:12px;padding:14px 3px;border-bottom:1px solid #eee;cursor:pointer}
-.avatar{width:43px;height:43px;border-radius:50%;background:#e8f0fe;color:#1967d2;display:grid;place-items:center;font-size:18px;font-weight:bold;flex-shrink:0}
-.info{flex:1;min-width:0}
-.name{font-weight:600;overflow-wrap:anywhere}
-.muted{color:#777;font-size:13px;margin-top:5px}
-.btn{border:1px solid #dadce0;background:white;color:#1a73e8;border-radius:20px;padding:9px 13px}
-.primary{border:0;background:#1a73e8;color:white;border-radius:24px;padding:12px 17px}
-.panel{border:1px solid #eee;border-radius:14px;padding:18px;margin:16px 0}
-.panel input{width:100%;border:1px solid #dadce0;border-radius:10px;padding:13px;margin:10px 0;outline-color:#1a73e8}
-.hidden{display:none!important}
-.empty{text-align:center;color:#777;padding:30px 5px}
-#chat{position:fixed;inset:0;background:white;z-index:5;display:flex;flex-direction:column}
-.chathead{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px;padding:0 10px}
-.chatbody{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.bubble{max-width:85%;background:#f1f3f4;padding:11px 14px;border-radius:18px;overflow-wrap:anywhere;white-space:pre-wrap}
-.bubble.mine{align-self:flex-end;background:#e8f0fe}
-.time{font-size:10px;color:#777;margin-top:5px}
-.chatfoot{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
-.chatfoot input{flex:1;min-width:0;border:1px solid #dadce0;border-radius:25px;padding:12px;outline-color:#1a73e8}
-.note{font-size:12px;color:#777;line-height:1.5}
-#status{font-size:13px;color:#666;margin:12px 0}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px 16px;background:#2563eb;color:white}
+input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;outline:none}
+input:focus{border-color:#2563eb}
+#login{max-width:390px;margin:90px auto;padding:25px;background:white;border-radius:16px;box-shadow:0 3px 18px #0001}
+#login h1{text-align:center;color:#2563eb}
+#login button{width:100%;margin-top:12px}
+#app{display:none;max-width:1100px;height:100dvh;margin:auto;background:white}
+header{height:60px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+header strong{font-size:21px;color:#2563eb}
+#layout{display:flex;height:calc(100% - 60px)}
+#sidebar{width:320px;border-right:1px solid #eee;padding:15px;overflow:auto}
+#sidebar h3{margin:8px 0 15px}
+#search{margin-bottom:12px}
+.user{padding:13px;border-radius:9px;cursor:pointer;border-bottom:1px solid #eee}
+.user:hover,.user.active{background:#eff6ff}
+#chat{flex:1;display:flex;flex-direction:column;min-width:0}
+#chatTitle{padding:16px;border-bottom:1px solid #eee;font-weight:bold}
+#messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:75%;padding:11px 14px;border-radius:13px;background:#f0f0f0;overflow-wrap:anywhere}
+.msg.mine{align-self:flex-end;background:#dbeafe}
+.msg small{display:block;color:#777;font-size:10px;margin-top:5px}
+#sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
+#sendArea input{flex:1;min-width:0}
+#sendArea button{padding:0 20px}
+#status{font-size:12px;color:#777;text-align:center;padding:8px}
+#error{color:#c62828;font-size:13px;margin-top:12px;overflow-wrap:anywhere}
+#logout{background:#eee;color:#333;padding:8px 12px}
+#empty{margin:auto;text-align:center;color:#888;padding:20px}
+@media(max-width:650px){
+ #sidebar{width:38%;padding:9px}
+ #chat{width:62%}
+ #messages{padding:10px}
+ .msg{max-width:90%}
+ header{padding:0 12px}
+ #sidebar input{padding:10px 7px}
+}
 </style>
 </head>
 <body>
+
+<div id="login">
+<h1>Nexora</h1>
+<p style="text-align:center;color:#777">Kullanıcı adını oluştur ve sohbete başla.</p>
+<input id="username" maxlength="20" placeholder="Kullanıcı adı (3-20 karakter)">
+<button id="register">Devam et</button>
+<div id="error"></div>
+</div>
+
+<div id="app">
 <header>
-<button class="icon" id="menu" aria-label="Profil">☰</button>
-<div class="logo">Nex<span>ora</span></div>
-<div style="flex:1"></div>
-<button class="icon" id="focusSearch" aria-label="Ara">⌕</button>
+<strong>Nexora</strong>
+<div>
+<span id="myName"></span>
+<button id="logout">Çıkış</button>
+</div>
 </header>
-
-<main>
-<div id="welcome" class="muted">Kişilerini bul ve sohbete başla.</div>
-<div class="search" id="searchBox">
-<span style="font-size:21px;color:#777">⌕</span>
-<input id="search" placeholder="Kullanıcı adı ara..." autocomplete="off">
-<button id="clear" class="icon hidden">×</button>
+<div id="layout">
+<aside id="sidebar">
+<h3>Kişiler</h3>
+<input id="search" placeholder="Kullanıcı adı ara...">
+<div id="users"></div>
+</aside>
+<main id="chat">
+<div id="chatTitle">Bir kişi seç</div>
+<div id="messages"><div id="empty">Sohbet etmek için bir kullanıcı ara.</div></div>
+<div id="status"></div>
+<div id="sendArea">
+<input id="messageInput" placeholder="Mesajını yaz..." maxlength="2000" disabled>
+<button id="send" disabled>Gönder</button>
 </div>
-<div class="tabs">
-<button class="tab active" data-tab="people">Kişiler</button>
-<button class="tab" data-tab="chats">Sohbetler</button>
-</div>
-<div id="status">Bağlanılıyor...</div>
-<div id="results"></div>
-
-<div id="profile" class="panel hidden">
-<strong>Nexora kullanıcı adın</strong>
-<p class="muted">3-20 karakter; harf, rakam ve alt çizgi.</p>
-<input id="username" maxlength="20" placeholder="Örn. brine_01" autocomplete="off">
-<button class="primary" id="save">Kullanıcı adını kaydet</button>
-</div>
-<p class="note">Nexora · Özel mesajlaşma</p>
 </main>
-
-<section id="chat" class="hidden">
-<div class="chathead">
-<button class="icon" id="back">←</button>
-<div class="avatar" id="chatAvatar">N</div>
-<div class="info">
-<div class="name" id="chatName">Sohbet</div>
-<div class="muted">Özel mesaj</div>
 </div>
 </div>
-<div id="messages" class="chatbody"></div>
-<form id="sendForm" class="chatfoot">
-<input id="message" maxlength="2000" placeholder="Mesaj yaz..." autocomplete="off">
-<button class="primary" type="submit">Gönder</button>
-</form>
-</section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://qddemnxngjjiwcmisqtb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_uAiMJd3Q6lyzoUOsKNhpuw_FbUFzxk_";
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const $ = id => document.getElementById(id);
-let me = null;
+let myId = null;
 let myProfile = null;
-let activePerson = null;
-let tab = "people";
-let loading = false;
+let selectedUser = null;
 let refreshTimer = null;
 
-function status(t){ $("status").textContent=t; }
+const $ = id => document.getElementById(id);
 
-function esc(s){
- return String(s).replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+function showError(message) {
+  $("error").textContent = message;
 }
 
-async function start(){
- try{
-  status("Giriş yapılıyor...");
-  let {data:{session},error} = await db.auth.getSession();
-  if(error) throw error;
+function showApp() {
+  $("login").style.display = "none";
+  $("app").style.display = "block";
+  $("myName").textContent = myProfile.username;
+}
 
-  if(!session){
-   const r = await db.auth.signInAnonymously();
-   if(r.error) throw r.error;
-   session = r.data.session;
-  }
+async function start() {
+  $("register").disabled = true;
+  showError("Bağlanılıyor...");
 
-  me = session.user;
-  const r = await db.from("profiles")
-    .select("id,username")
-    .eq("id",me.id)
-    .maybeSingle();
+  try {
+    let { data: { session }, error } = await db.auth.getSession();
+    if (error) throw error;
 
-  if(r.error) throw r.error;
-  myProfile = r.data;
-
-  if(!myProfile){
-   $("profile").classList.remove("hidden");
-   status("Bir kullanıcı adı seç.");
-  }else{
-   $("profile").classList.add("hidden");
-   status("Bağlandı.");
-  }
-
-  renderWelcome();
-  await render();
-  if(refreshTimer) clearInterval(refreshTimer);
-  refreshTimer = setInterval(async()=>{
-   if(document.visibilityState==="visible"){
-    await render();
-    if(activePerson && !$("chat").classList.contains("hidden")){
-     await loadMessages();
+    if (!session) {
+      const result = await db.auth.signInAnonymously();
+      if (result.error) throw result.error;
+      session = result.data.session;
     }
-   }
-  },3000);
- }catch(e){
-  console.error(e);
-  status("Bağlantı hatası: "+(e.message||"Ayarları kontrol et."));
- }
+
+    myId = session.user.id;
+
+    const result = await db
+      .from("profiles")
+      .select("*")
+      .eq("id", myId)
+      .maybeSingle();
+
+    if (result.error) throw result.error;
+
+    if (result.data) {
+      myProfile = result.data;
+      enterApp();
+    } else {
+      showError("");
+      $("register").disabled = false;
+    }
+  } catch (e) {
+    showError("Bağlantı hatası: " + e.message);
+    $("register").disabled = false;
+  }
 }
 
-function renderWelcome(){
- $("welcome").textContent=myProfile
-  ? "@"+myProfile.username
-  : "Nexora'ya hoş geldin.";
+function enterApp() {
+  showApp();
+  loadUsers();
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => {
+    loadUsers();
+    if (selectedUser) loadMessages();
+  }, 3000);
 }
 
-async function render(){
- if(!me)return;
- const q=$("search").value.trim().toLowerCase();
- $("clear").classList.toggle("hidden",!q);
+async function register() {
+  const username = $("username").value.trim();
 
- if(tab==="people"){
-  if(!q){
-   $("results").innerHTML='<div class="empty">Arkadaşını bulmak için kullanıcı adını ara.</div>';
-   return;
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    showError("Kullanıcı adı 3-20 karakter olmalı. Yalnızca İngilizce harf, rakam ve _ kullanabilirsin.");
+    return;
   }
-  const r=await db.from("profiles")
-   .select("id,username")
-   .ilike("username",q.replace(/[%_,]/g,""))
-   .neq("id",me.id)
-   .order("username")
-   .limit(30);
 
-  if(r.error){
-   $("results").innerHTML='<div class="empty">Arama başarısız oldu.</div>';
-   return;
-  }
-  $("results").innerHTML=r.data.length
-   ?r.data.map(personHTML).join("")
-   :'<div class="empty">Kullanıcı bulunamadı.</div>';
- }else{
-  const r=await db.from("messages")
-   .select("sender_id,receiver_id,content,created_at")
-   .or(`sender_id.eq.${me.id},receiver_id.eq.${me.id}`)
-   .order("created_at",{ascending:false})
-   .limit(200);
+  $("register").disabled = true;
+  showError("Kullanıcı adı kontrol ediliyor...");
 
-  if(r.error){
-   $("results").innerHTML='<div class="empty">Sohbetler yüklenemedi.</div>';
-   return;
+  try {
+    const check = await db
+      .from("profiles")
+      .select("id,username")
+      .ilike("username", username)
+      .limit(1);
+
+    if (check.error) throw check.error;
+
+    if (check.data && check.data.length > 0) {
+      showError("Bu kullanıcı adı zaten alınmış. Başka bir ad dene.");
+      $("register").disabled = false;
+      return;
+    }
+
+    const result = await db
+      .from("profiles")
+      .insert({
+        id: myId,
+        username: username
+      })
+      .select()
+      .single();
+
+    if (result.error) {
+      if (result.error.code === "23505") {
+        showError("Bu kullanıcı adı zaten alınmış. Başka bir ad dene.");
+      } else {
+        showError("Kayıt başarısız (" + (result.error.code || "hata") + "): " + result.error.message);
+      }
+      $("register").disabled = false;
+      return;
+    }
+
+    myProfile = result.data;
+    enterApp();
+
+  } catch (e) {
+    showError("Kayıt sırasında hata: " + e.message);
+    $("register").disabled = false;
   }
-  const ids=[...new Set(r.data.map(m=>
-   m.sender_id===me.id?m.receiver_id:m.sender_id
-  ))];
-  if(!ids.length){
-   $("results").innerHTML='<div class="empty">Henüz sohbetin yok.</div>';
-   return;
-  }
-  const p=await db.from("profiles").select("id,username").in("id",ids);
-  if(p.error){
-   $("results").innerHTML='<div class="empty">Kişiler yüklenemedi.</div>';
-   return;
-  }
-  const byId=Object.fromEntries(p.data.map(x=>[x.id,x]));
-  const seen=new Set();
-  const people=[];
-  for(const m of r.data){
-   const id=m.sender_id===me.id?m.receiver_id:m.sender_id;
-   if(!seen.has(id)&&byId[id]){
-    seen.add(id);
-    people.push({...byId[id],last:m.content});
-   }
-  }
-  $("results").innerHTML=people.map(personHTML).join("");
- }
 }
 
-function personHTML(p){
- return `<div class="person" data-id="${esc(p.id)}" data-name="${esc(p.username)}">
- <div class="avatar">${esc(p.username[0].toUpperCase())}</div>
- <div class="info"><div class="name">${esc(p.username)}</div>
- <div class="muted">${esc(p.last||"Sohbet başlat")}</div></div>
- <button class="btn" type="button">Mesaj</button></div>`;
-}
+async function loadUsers() {
+  const q = $("search").value.trim();
 
-$("results").addEventListener("click",async e=>{
- const p=e.target.closest("[data-id]");
- if(!p)return;
- activePerson={id:p.dataset.id,username:p.dataset.name};
- $("chatName").textContent=activePerson.username;
- $("chatAvatar").textContent=activePerson.username[0].toUpperCase();
- $("chat").classList.remove("hidden");
- await loadMessages();
- $("message").focus();
-});
+  let query = db
+    .from("profiles")
+    .select("id,username")
+    .neq("id", myId)
+    .order("username")
+    .limit(50);
 
-async function loadMessages(){
- if(!activePerson||!me)return;
- const other=activePerson.id;
- const r=await db.from("messages")
-  .select("id,sender_id,receiver_id,content,created_at")
-  .or(`and(sender_id.eq.${me.id},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me.id})`)
-  .order("created_at",{ascending:true})
-  .limit(200);
+  if (q) query = query.ilike("username", "%" + q.replace(/[%_,]/g, "") + "%");
 
- if(r.error){
-  $("messages").innerHTML='<div class="empty">Mesajlar yüklenemedi.</div>';
-  return;
- }
- $("messages").innerHTML=r.data.map(m=>
-  `<div class="bubble ${m.sender_id===me.id?"mine":""}">
-  ${esc(m.content)}
-  <div class="time">${new Date(m.created_at).toLocaleString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
-  </div>`
- ).join("");
- $("messages").scrollTop=$("messages").scrollHeight;
-}
+  const { data, error } = await query;
 
-$("sendForm").addEventListener("submit",async e=>{
- e.preventDefault();
- const content=$("message").value.trim();
- if(!content||!activePerson||!me||loading)return;
- loading=true;
- const btn=$("sendForm").querySelector("button");
- btn.disabled=true;
- try{
-  const r=await db.from("messages").insert({
-   sender_id:me.id,
-   receiver_id:activePerson.id,
-   content
+  if (error) {
+    $("users").textContent = "Kullanıcılar yüklenemedi: " + error.message;
+    return;
+  }
+
+  $("users").innerHTML = "";
+
+  if (!data.length) {
+    $("users").textContent = q ? "Kullanıcı bulunamadı." : "Henüz başka kullanıcı yok.";
+    return;
+  }
+
+  data.forEach(user => {
+    const div = document.createElement("div");
+    div.className = "user" + (selectedUser?.id === user.id ? " active" : "");
+    div.textContent = user.username;
+    div.onclick = () => openChat(user);
+    $("users").appendChild(div);
   });
-  if(r.error)throw r.error;
-  $("message").value="";
+}
+
+async function openChat(user) {
+  selectedUser = user;
+  $("chatTitle").textContent = user.username;
+  $("messageInput").disabled = false;
+  $("send").disabled = false;
+  await loadUsers();
   await loadMessages();
- }catch(err){
-  alert("Mesaj gönderilemedi: "+err.message);
- }finally{
-  loading=false;
-  btn.disabled=false;
- }
-});
+}
 
-$("save").onclick=async()=>{
- if(!me)return;
- const username=$("username").value.trim().toLowerCase();
- if(!/^[a-z0-9_]{3,20}$/.test(username)){
-  alert("3-20 karakter kullan. Harf, rakam ve _ olabilir.");
-  return;
- }
- $("save").disabled=true;
- try{
-  const r=await db.from("profiles").insert({id:me.id,username});
-  if(r.error){
-   if(r.error.code==="23505")throw new Error("Bu kullanıcı adı alınmış.");
-   throw r.error;
+async function loadMessages() {
+  if (!selectedUser) return;
+
+  const otherId = selectedUser.id;
+
+  const { data, error } = await db
+    .from("messages")
+    .select("*")
+    .or(
+      `and(sender_id.eq.${myId},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${myId})`
+    )
+    .order("created_at", { ascending: true })
+    .limit(200);
+
+  if (error) {
+    $("status").textContent = "Mesajlar yüklenemedi: " + error.message;
+    return;
   }
-  myProfile={id:me.id,username};
-  $("profile").classList.add("hidden");
-  renderWelcome();
-  status("Kullanıcı adın kaydedildi.");
-  await render();
- }catch(e){
-  alert(e.message||"Kullanıcı adı kaydedilemedi.");
- }finally{
-  $("save").disabled=false;
- }
-};
 
-$("menu").onclick=()=>{
- $("profile").classList.toggle("hidden");
- if(myProfile)$("username").value=myProfile.username;
-};
-$("back").onclick=()=>{
- $("chat").classList.add("hidden");
- activePerson=null;
- render();
-};
-$("search").addEventListener("input",()=>{
- tab="people";
- document.querySelectorAll("[data-tab]").forEach(b=>
-  b.classList.toggle("active",b.dataset.tab==="people"));
- render();
+  const box = $("messages");
+  box.innerHTML = "";
+
+  if (!data.length) {
+    box.innerHTML = '<div id="empty">Henüz mesaj yok. İlk mesajı sen gönder!</div>';
+    return;
+  }
+
+  data.forEach(message => {
+    const div = document.createElement("div");
+    div.className = "msg" + (message.sender_id === myId ? " mine" : "");
+
+    const content = document.createElement("div");
+    content.textContent = message.content;
+
+    const time = document.createElement("small");
+    time.textContent = new Date(message.created_at).toLocaleString("tr-TR");
+
+    div.append(content, time);
+    box.appendChild(div);
+  });
+
+  box.scrollTop = box.scrollHeight;
+  $("status").textContent = "";
+}
+
+async function sendMessage() {
+  const content = $("messageInput").value.trim();
+
+  if (!content || !selectedUser) return;
+
+  $("send").disabled = true;
+
+  const { error } = await db.from("messages").insert({
+    sender_id: myId,
+    receiver_id: selectedUser.id,
+    content: content
+  });
+
+  $("send").disabled = false;
+
+  if (error) {
+    $("status").textContent = "Mesaj gönderilemedi: " + error.message;
+    return;
+  }
+
+  $("messageInput").value = "";
+  await loadMessages();
+}
+
+$("register").addEventListener("click", register);
+$("search").addEventListener("input", loadUsers);
+$("send").addEventListener("click", sendMessage);
+$("messageInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
 });
-$("clear").onclick=()=>{$("search").value="";render()};
-$("focusSearch").onclick=()=>{
- $("search").focus();
- window.scrollTo({top:0,behavior:"smooth"});
-};
-document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
- tab=b.dataset.tab;
- document.querySelectorAll("[data-tab]").forEach(x=>
-  x.classList.toggle("active",x===b));
- render();
+
+$("logout").addEventListener("click", async () => {
+  if (!confirm("Bu cihazdaki oturumdan çıkmak istiyor musun?")) return;
+  await db.auth.signOut();
+  location.reload();
 });
 
 start();
