@@ -11,6 +11,7 @@
 body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#202124}
 button,input{font:inherit}
 button{cursor:pointer;border:0;border-radius:9px;padding:12px 16px;background:#2563eb;color:white}
+button:disabled{opacity:.5;cursor:not-allowed}
 input{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;outline:none}
 input:focus{border-color:#2563eb}
 #login{max-width:390px;margin:90px auto;padding:25px;background:white;border-radius:16px;box-shadow:0 3px 18px #0001}
@@ -28,16 +29,17 @@ header strong{font-size:21px;color:#2563eb}
 #chat{flex:1;display:flex;flex-direction:column;min-width:0}
 #chatTitle{padding:16px;border-bottom:1px solid #eee;font-weight:bold}
 #messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:75%;padding:11px 14px;border-radius:13px;background:#f0f0f0;overflow-wrap:anywhere}
+.msg{max-width:75%;padding:11px 14px;border-radius:13px;background:#f0f0f0;overflow-wrap:anywhere;white-space:pre-wrap}
 .msg.mine{align-self:flex-end;background:#dbeafe}
 .msg small{display:block;color:#777;font-size:10px;margin-top:5px}
 #sendArea{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
 #sendArea input{flex:1;min-width:0}
 #sendArea button{padding:0 20px}
-#status{font-size:12px;color:#777;text-align:center;padding:8px}
+#status{font-size:12px;color:#777;text-align:center;padding:8px;overflow-wrap:anywhere}
 #error{color:#c62828;font-size:13px;margin-top:12px;overflow-wrap:anywhere}
 #logout{background:#eee;color:#333;padding:8px 12px}
 #empty{margin:auto;text-align:center;color:#888;padding:20px}
+.hint{font-size:12px;color:#888;padding:10px}
 @media(max-width:650px){
  #sidebar{width:38%;padding:9px}
  #chat{width:62%}
@@ -53,7 +55,7 @@ header strong{font-size:21px;color:#2563eb}
 <div id="login">
 <h1>Nexora</h1>
 <p style="text-align:center;color:#777">Kullanıcı adını oluştur ve sohbete başla.</p>
-<input id="username" maxlength="20" placeholder="Kullanıcı adı (3-20 karakter)">
+<input id="username" maxlength="20" placeholder="Kullanıcı adı (3-20 karakter)" autocomplete="off" autocorrect="off" spellcheck="false">
 <button id="register">Devam et</button>
 <div id="error"></div>
 </div>
@@ -66,18 +68,20 @@ header strong{font-size:21px;color:#2563eb}
 <button id="logout">Çıkış</button>
 </div>
 </header>
+
 <div id="layout">
 <aside id="sidebar">
 <h3>Kişiler</h3>
-<input id="search" placeholder="Kullanıcı adı ara...">
-<div id="users"></div>
+<input id="search" placeholder="Kullanıcı adı ara..." autocomplete="off" autocorrect="off" spellcheck="false">
+<div id="users" class="hint">Kişi bulmak için kullanıcı adı ara.</div>
 </aside>
+
 <main id="chat">
 <div id="chatTitle">Bir kişi seç</div>
 <div id="messages"><div id="empty">Sohbet etmek için bir kullanıcı ara.</div></div>
 <div id="status"></div>
 <div id="sendArea">
-<input id="messageInput" placeholder="Mesajını yaz..." maxlength="2000" disabled>
+<input id="messageInput" placeholder="Mesajını yaz..." maxlength="2000" disabled autocomplete="off" autocorrect="off" spellcheck="false">
 <button id="send" disabled>Gönder</button>
 </div>
 </main>
@@ -94,6 +98,8 @@ let myId = null;
 let myProfile = null;
 let selectedUser = null;
 let refreshTimer = null;
+let searchTimer = null;
+let sending = false;
 
 const $ = id => document.getElementById(id);
 
@@ -112,53 +118,56 @@ async function start() {
   showError("Bağlanılıyor...");
 
   try {
-    let { data: { session }, error } = await db.auth.getSession();
-    if (error) throw error;
+    let {data:{session},error} = await db.auth.getSession();
+    if(error) throw error;
 
-    if (!session) {
+    if(!session) {
       const result = await db.auth.signInAnonymously();
-      if (result.error) throw result.error;
+      if(result.error) throw result.error;
       session = result.data.session;
     }
 
     myId = session.user.id;
 
-    const result = await db
-      .from("profiles")
+    const result = await db.from("profiles")
       .select("*")
-      .eq("id", myId)
+      .eq("id",myId)
       .maybeSingle();
 
-    if (result.error) throw result.error;
+    if(result.error) throw result.error;
 
-    if (result.data) {
+    if(result.data) {
       myProfile = result.data;
       enterApp();
     } else {
       showError("");
       $("register").disabled = false;
     }
-  } catch (e) {
-    showError("Bağlantı hatası: " + e.message);
+
+  } catch(e) {
+    showError("Bağlantı hatası: "+e.message);
     $("register").disabled = false;
   }
 }
 
 function enterApp() {
   showApp();
-  loadUsers();
-  if (refreshTimer) clearInterval(refreshTimer);
+
+  // Başlangıçta kullanıcıların tamamını gösterme.
+  $("users").textContent = "Kişi bulmak için kullanıcı adı ara.";
+
+  if(refreshTimer) clearInterval(refreshTimer);
+
   refreshTimer = setInterval(() => {
-    loadUsers();
-    if (selectedUser) loadMessages();
-  }, 3000);
+    if(selectedUser) loadMessages();
+  },3000);
 }
 
 async function register() {
   const username = $("username").value.trim();
 
-  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-    showError("Kullanıcı adı 3-20 karakter olmalı. Yalnızca İngilizce harf, rakam ve _ kullanabilirsin.");
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    showError("Kullanıcı adı 3-20 karakter olmalı. İngilizce harf, rakam ve _ kullanabilirsin.");
     return;
   }
 
@@ -166,35 +175,31 @@ async function register() {
   showError("Kullanıcı adı kontrol ediliyor...");
 
   try {
-    const check = await db
-      .from("profiles")
+    const check = await db.from("profiles")
       .select("id,username")
-      .ilike("username", username)
+      .ilike("username",username)
       .limit(1);
 
-    if (check.error) throw check.error;
+    if(check.error) throw check.error;
 
-    if (check.data && check.data.length > 0) {
-      showError("Bu kullanıcı adı zaten alınmış. Başka bir ad dene.");
+    if(check.data && check.data.length>0) {
+      showError("Bu kullanıcı adı zaten alınmış.");
       $("register").disabled = false;
       return;
     }
 
-    const result = await db
-      .from("profiles")
-      .insert({
-        id: myId,
-        username: username
-      })
+    const result = await db.from("profiles")
+      .insert({id:myId,username:username})
       .select()
       .single();
 
-    if (result.error) {
-      if (result.error.code === "23505") {
-        showError("Bu kullanıcı adı zaten alınmış. Başka bir ad dene.");
+    if(result.error) {
+      if(result.error.code==="23505") {
+        showError("Bu kullanıcı adı zaten alınmış.");
       } else {
-        showError("Kayıt başarısız (" + (result.error.code || "hata") + "): " + result.error.message);
+        showError("Kayıt hatası ("+(result.error.code||"bilinmiyor")+"): "+result.error.message);
       }
+
       $("register").disabled = false;
       return;
     }
@@ -202,8 +207,8 @@ async function register() {
     myProfile = result.data;
     enterApp();
 
-  } catch (e) {
-    showError("Kayıt sırasında hata: " + e.message);
+  } catch(e) {
+    showError("Kayıt hatası: "+e.message);
     $("register").disabled = false;
   }
 }
@@ -211,32 +216,39 @@ async function register() {
 async function loadUsers() {
   const q = $("search").value.trim();
 
-  let query = db
-    .from("profiles")
+  // Arama kutusu boşsa hiçbir kullanıcıyı listeleme.
+  if(!q) {
+    $("users").textContent = "Kişi bulmak için kullanıcı adı ara.";
+    return;
+  }
+
+  if(q.length<2) {
+    $("users").textContent = "Aramak için en az 2 karakter yaz.";
+    return;
+  }
+
+  const {data,error} = await db.from("profiles")
     .select("id,username")
-    .neq("id", myId)
+    .neq("id",myId)
+    .ilike("username","%"+q.replace(/[%_,]/g,"")+"%")
     .order("username")
-    .limit(50);
+    .limit(30);
 
-  if (q) query = query.ilike("username", "%" + q.replace(/[%_,]/g, "") + "%");
-
-  const { data, error } = await query;
-
-  if (error) {
-    $("users").textContent = "Kullanıcılar yüklenemedi: " + error.message;
+  if(error) {
+    $("users").textContent = "Arama hatası: "+error.message;
     return;
   }
 
   $("users").innerHTML = "";
 
-  if (!data.length) {
-    $("users").textContent = q ? "Kullanıcı bulunamadı." : "Henüz başka kullanıcı yok.";
+  if(!data || !data.length) {
+    $("users").textContent = "Kullanıcı bulunamadı.";
     return;
   }
 
   data.forEach(user => {
     const div = document.createElement("div");
-    div.className = "user" + (selectedUser?.id === user.id ? " active" : "");
+    div.className = "user"+(selectedUser?.id===user.id?" active":"");
     div.textContent = user.username;
     div.onclick = () => openChat(user);
     $("users").appendChild(div);
@@ -245,51 +257,56 @@ async function loadUsers() {
 
 async function openChat(user) {
   selectedUser = user;
+
   $("chatTitle").textContent = user.username;
   $("messageInput").disabled = false;
   $("send").disabled = false;
+  $("messages").innerHTML = '<div id="empty">Mesajlar yükleniyor...</div>';
+  $("status").textContent = "";
+
   await loadUsers();
   await loadMessages();
 }
 
 async function loadMessages() {
-  if (!selectedUser) return;
+  if(!selectedUser) return;
 
   const otherId = selectedUser.id;
 
-  const { data, error } = await db
-    .from("messages")
+  const {data,error} = await db.from("messages")
     .select("*")
     .or(
       `and(sender_id.eq.${myId},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${myId})`
     )
-    .order("created_at", { ascending: true })
+    .order("created_at",{ascending:true})
     .limit(200);
 
-  if (error) {
-    $("status").textContent = "Mesajlar yüklenemedi: " + error.message;
+  if(error) {
+    $("status").textContent = "Mesaj yükleme hatası ("+(error.code||"")+"): "+error.message;
     return;
   }
 
   const box = $("messages");
   box.innerHTML = "";
 
-  if (!data.length) {
+  if(!data || !data.length) {
     box.innerHTML = '<div id="empty">Henüz mesaj yok. İlk mesajı sen gönder!</div>';
+    $("status").textContent = "";
     return;
   }
 
   data.forEach(message => {
     const div = document.createElement("div");
-    div.className = "msg" + (message.sender_id === myId ? " mine" : "");
+    div.className = "msg"+(message.sender_id===myId?" mine":"");
 
     const content = document.createElement("div");
+    // Mesajı HTML olarak değil, aynen metin olarak göster.
     content.textContent = message.content;
 
     const time = document.createElement("small");
     time.textContent = new Date(message.created_at).toLocaleString("tr-TR");
 
-    div.append(content, time);
+    div.append(content,time);
     box.appendChild(div);
   });
 
@@ -298,38 +315,65 @@ async function loadMessages() {
 }
 
 async function sendMessage() {
-  const content = $("messageInput").value.trim();
+  if(sending || !selectedUser) return;
 
-  if (!content || !selectedUser) return;
+  const content = $("messageInput").value;
 
-  $("send").disabled = true;
+  if(!content.trim()) return;
 
-  const { error } = await db.from("messages").insert({
-    sender_id: myId,
-    receiver_id: selectedUser.id,
-    content: content
-  });
-
-  $("send").disabled = false;
-
-  if (error) {
-    $("status").textContent = "Mesaj gönderilemedi: " + error.message;
+  if(content.length>2000) {
+    $("status").textContent = "Mesaj en fazla 2000 karakter olabilir.";
     return;
   }
 
-  $("messageInput").value = "";
-  await loadMessages();
+  sending = true;
+  $("send").disabled = true;
+  $("status").textContent = "Gönderiliyor...";
+
+  try {
+    const {error} = await db.from("messages").insert({
+      sender_id:myId,
+      receiver_id:selectedUser.id,
+      content:content
+    });
+
+    if(error) {
+      $("status").textContent =
+        "Gönderme hatası ("+(error.code||"kodsuz")+"): "+error.message;
+      return;
+    }
+
+    // Yalnızca başarılı gönderimden sonra alanı temizle.
+    $("messageInput").value = "";
+    $("status").textContent = "Mesaj gönderildi.";
+    await loadMessages();
+
+  } catch(e) {
+    $("status").textContent = "Beklenmeyen hata: "+e.message;
+  } finally {
+    sending = false;
+    $("send").disabled = !selectedUser;
+  }
 }
 
-$("register").addEventListener("click", register);
-$("search").addEventListener("input", loadUsers);
-$("send").addEventListener("click", sendMessage);
-$("messageInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
+$("register").addEventListener("click",register);
+
+$("search").addEventListener("input",() => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(loadUsers,250);
 });
 
-$("logout").addEventListener("click", async () => {
-  if (!confirm("Bu cihazdaki oturumdan çıkmak istiyor musun?")) return;
+$("send").addEventListener("click",sendMessage);
+
+$("messageInput").addEventListener("keydown",e => {
+  if(e.key==="Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+$("logout").addEventListener("click",async () => {
+  if(!confirm("Bu cihazdaki oturumdan çıkmak istiyor musun?")) return;
   await db.auth.signOut();
   location.reload();
 });
