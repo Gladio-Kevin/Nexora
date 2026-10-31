@@ -251,7 +251,7 @@ async function refreshAll(){
  }finally{busy=false}
 }
 
-/* Yalnızca mesaj geçmişi bulunan kullanıcıları özel sohbetlerde göster. */
+/* Özel sohbet listesi: yalnızca mesaj geçmişi olan kişiler. */
 async function loadContacts(){
  try{
   const {data:msgs,error:me}=await db.from("messages")
@@ -643,19 +643,45 @@ function updateMemberCount(){
  $("memberCount").style.color=count>=3&&count<=10?"#39df9b":"#9da5ba";
 }
 
+/* YALNIZCA ÖZEL MESAJ GEÇMİŞİ OLAN KİŞİLERİ GRUP EKLEMEDE GÖSTER */
 async function loadGroupUsers(){
  try{
-  const {data,error}=await db.from("profiles")
-   .select("id,username")
-   .neq("id",myId)
-   .order("username")
-   .limit(500);
+  const {data:msgs,error:me}=await db.from("messages")
+   .select("sender_id,receiver_id")
+   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
+   .limit(1000);
 
-  if(error)throw error;
-  groupUsers=data||[];
+  if(me)throw me;
+
+  const userIds=new Set();
+
+  (msgs||[]).forEach(m=>{
+   const other=m.sender_id===myId?m.receiver_id:m.sender_id;
+   if(other!==myId)userIds.add(other);
+  });
+
+  const ids=[...userIds];
+
+  if(!ids.length){
+   groupUsers=[];
+   renderGroupUsers();
+   return;
+  }
+
+  const {data:profiles,error:pe}=await db.from("profiles")
+   .select("id,username")
+   .in("id",ids)
+   .order("username");
+
+  if(pe)throw pe;
+
+  groupUsers=profiles||[];
   renderGroupUsers();
+
  }catch(e){
+  console.error("Grup kullanıcıları yüklenemedi:",e);
   $("groupUserList").innerHTML="";
+
   const errorBox=document.createElement("div");
   errorBox.className="emptylist";
   errorBox.textContent="Kullanıcılar yüklenemedi: "+e.message;
@@ -671,7 +697,7 @@ function renderGroupUsers(){
  const filtered=groupUsers.filter(u=>u.username.toLocaleLowerCase("tr").includes(q));
 
  if(!filtered.length){
-  list.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
+  list.innerHTML='<div class="emptylist">Mesajlaştığın uygun kullanıcı bulunamadı.</div>';
   return;
  }
 
