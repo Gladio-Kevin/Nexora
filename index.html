@@ -3,185 +3,350 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff">
 <title>Nexora</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#fff;color:#202124;font-family:Arial,sans-serif}
-header{height:65px;display:flex;align-items:center;padding:0 18px;gap:18px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff}
-.logo{font-size:27px;font-weight:600;letter-spacing:-1.5px;color:#4285f4}
+body{margin:0;font-family:Arial,sans-serif;color:#202124;background:white}
+header{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;padding:0 16px;gap:16px;position:sticky;top:0;background:white;z-index:2}
+.logo{font-size:27px;font-weight:bold;color:#4285f4;letter-spacing:-1px}
 .logo span{color:#34a853}
 button,input{font:inherit}
 button{cursor:pointer}
-.iconbtn{border:0;background:white;font-size:24px;padding:7px;color:#5f6368}
-main{max-width:650px;margin:auto;padding:20px 18px}
-.search{display:flex;align-items:center;gap:10px;border:1px solid #dadce0;border-radius:28px;padding:0 16px;height:49px;margin:14px 0 22px}
+.icon{border:0;background:white;font-size:23px;color:#555;padding:8px}
+main{max-width:650px;margin:auto;padding:18px}
+.search{height:49px;border:1px solid #dadce0;border-radius:28px;display:flex;align-items:center;padding:0 15px;gap:10px;margin:15px 0 22px}
 .search:focus-within{box-shadow:0 1px 6px #0002}
-.search input{border:0;outline:none;width:100%;font-size:16px}
-.tabs{display:flex;gap:8px;border-bottom:1px solid #eee;margin-bottom:12px}
-.tab{background:white;border:0;padding:13px 16px;color:#5f6368}
+.search input{width:100%;border:0;outline:0;font-size:16px}
+.tabs{display:flex;border-bottom:1px solid #eee}
+.tab{background:white;border:0;padding:13px 17px;color:#666}
 .tab.active{color:#1a73e8;border-bottom:2px solid #1a73e8}
-.person{display:flex;align-items:center;gap:13px;padding:14px 5px;border-bottom:1px solid #f0f0f0;cursor:pointer}
-.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#e8f0fe;color:#1967d2;font-weight:bold;font-size:18px;flex-shrink:0}
-.person-info{flex:1;min-width:0}
-.username{font-weight:600}
-.muted{color:#777;font-size:13px;margin-top:4px}
-.smallbtn{border:1px solid #dadce0;background:white;border-radius:18px;padding:8px 13px;color:#1a73e8}
-.primary{background:#1a73e8;color:white;border:0;border-radius:22px;padding:11px 17px}
-.panel{border:1px solid #eee;border-radius:16px;padding:20px;margin:15px 0}
-.panel input{width:100%;border:1px solid #dadce0;border-radius:10px;padding:13px;margin:8px 0 13px;outline-color:#1a73e8}
+.person{display:flex;align-items:center;gap:12px;padding:14px 3px;border-bottom:1px solid #eee;cursor:pointer}
+.avatar{width:43px;height:43px;border-radius:50%;background:#e8f0fe;color:#1967d2;display:grid;place-items:center;font-size:18px;font-weight:bold;flex-shrink:0}
+.info{flex:1;min-width:0}
+.name{font-weight:600;overflow-wrap:anywhere}
+.muted{color:#777;font-size:13px;margin-top:5px}
+.btn{border:1px solid #dadce0;background:white;color:#1a73e8;border-radius:20px;padding:9px 13px}
+.primary{border:0;background:#1a73e8;color:white;border-radius:24px;padding:12px 17px}
+.panel{border:1px solid #eee;border-radius:14px;padding:18px;margin:16px 0}
+.panel input{width:100%;border:1px solid #dadce0;border-radius:10px;padding:13px;margin:10px 0;outline-color:#1a73e8}
 .hidden{display:none!important}
-#chat{position:fixed;inset:0;background:#fff;z-index:5;display:flex;flex-direction:column}
-.chathead{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:13px;padding:0 12px}
-.chatbody{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
-.bubble{max-width:82%;padding:11px 14px;border-radius:18px;background:#f1f3f4;align-self:flex-start;overflow-wrap:anywhere}
-.bubble.mine{background:#e8f0fe;align-self:flex-end}
-.chatfoot{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
-.chatfoot input{flex:1;min-width:0;border:1px solid #dadce0;border-radius:24px;padding:12px 15px;outline-color:#1a73e8}
-.note{font-size:12px;color:#777;line-height:1.5}
 .empty{text-align:center;color:#777;padding:30px 5px}
+#chat{position:fixed;inset:0;background:white;z-index:5;display:flex;flex-direction:column}
+.chathead{height:65px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px;padding:0 10px}
+.chatbody{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.bubble{max-width:85%;background:#f1f3f4;padding:11px 14px;border-radius:18px;overflow-wrap:anywhere;white-space:pre-wrap}
+.bubble.mine{align-self:flex-end;background:#e8f0fe}
+.time{font-size:10px;color:#777;margin-top:5px}
+.chatfoot{display:flex;gap:8px;padding:12px;border-top:1px solid #eee}
+.chatfoot input{flex:1;min-width:0;border:1px solid #dadce0;border-radius:25px;padding:12px;outline-color:#1a73e8}
+.note{font-size:12px;color:#777;line-height:1.5}
+#status{font-size:13px;color:#666;margin:12px 0}
 </style>
 </head>
 <body>
 <header>
-<button class="iconbtn" id="menuBtn" aria-label="Menü">☰</button>
+<button class="icon" id="menu" aria-label="Profil">☰</button>
 <div class="logo">Nex<span>ora</span></div>
 <div style="flex:1"></div>
-<button class="iconbtn" id="searchBtn" aria-label="Ara">⌕</button>
+<button class="icon" id="focusSearch" aria-label="Ara">⌕</button>
 </header>
 
 <main>
-<section id="home">
-<div id="welcome" style="margin:15px 0;font-size:14px;color:#5f6368">Kullanıcılarını bul ve sohbete başla.</div>
+<div id="welcome" class="muted">Kişilerini bul ve sohbete başla.</div>
 <div class="search" id="searchBox">
-<span style="font-size:20px;color:#777">⌕</span>
-<input id="searchInput" placeholder="Kullanıcı adı ara..." autocomplete="off">
-<button id="clearSearch" class="iconbtn" style="display:none">×</button>
+<span style="font-size:21px;color:#777">⌕</span>
+<input id="search" placeholder="Kullanıcı adı ara..." autocomplete="off">
+<button id="clear" class="icon hidden">×</button>
 </div>
 <div class="tabs">
 <button class="tab active" data-tab="people">Kişiler</button>
 <button class="tab" data-tab="chats">Sohbetler</button>
 </div>
+<div id="status">Bağlanılıyor...</div>
 <div id="results"></div>
-<div id="profilePanel" class="panel hidden">
+
+<div id="profile" class="panel hidden">
 <strong>Nexora kullanıcı adın</strong>
-<p class="muted">Benzersiz bir isim seç.</p>
-<input id="usernameInput" maxlength="20" placeholder="Örn. brine_01">
-<button class="primary" id="saveName">Kullanıcı adını ayarla</button>
-<p class="note">Bu ilk taslaktır. Hesap ve kullanıcı adı henüz sunucuya kaydedilmiyor.</p>
+<p class="muted">3-20 karakter; harf, rakam ve alt çizgi.</p>
+<input id="username" maxlength="20" placeholder="Örn. brine_01" autocomplete="off">
+<button class="primary" id="save">Kullanıcı adını kaydet</button>
 </div>
-<div id="createPanel" class="panel hidden">
-<strong>Yeni sohbet</strong>
-<p class="muted">Önce arama alanından bir kullanıcı bul.</p>
-<button class="smallbtn" id="goSearch">Kişi ara</button>
-</div>
-<p class="note" style="margin-top:24px">Nexora · İlk taslak</p>
-</section>
+<p class="note">Nexora · Özel mesajlaşma</p>
 </main>
 
 <section id="chat" class="hidden">
 <div class="chathead">
-<button class="iconbtn" id="backBtn">←</button>
+<button class="icon" id="back">←</button>
 <div class="avatar" id="chatAvatar">N</div>
-<div style="flex:1">
-<div class="username" id="chatName">Kullanıcı</div>
-<div class="muted">Sohbet</div>
+<div class="info">
+<div class="name" id="chatName">Sohbet</div>
+<div class="muted">Özel mesaj</div>
 </div>
 </div>
-<div id="chatMessages" class="chatbody"></div>
-<form id="messageForm" class="chatfoot">
-<input id="messageInput" maxlength="2000" placeholder="Mesaj yaz..." autocomplete="off">
+<div id="messages" class="chatbody"></div>
+<form id="sendForm" class="chatfoot">
+<input id="message" maxlength="2000" placeholder="Mesaj yaz..." autocomplete="off">
 <button class="primary" type="submit">Gönder</button>
 </form>
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const $ = id => document.getElementById(id);
-let myName = localStorage.getItem("nexora_name") || "";
-let activeTab = "people";
-let currentPerson = "";
-let demoUsers = ["brine","nexura","shadow","kevin","gladio"];
-let localMessages = {};
+const SUPABASE_URL = "https://qddemnxngjjiwcmisqtb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_uAiMJd3Q6lyzoUOsKNhpuw_FbUFzxk_";
 
-function escapeHTML(s){
- return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+let me = null;
+let myProfile = null;
+let activePerson = null;
+let tab = "people";
+let loading = false;
+let refreshTimer = null;
+
+function status(t){ $("status").textContent=t; }
+
+function esc(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
-function getMessages(name){
- return localMessages[name] || (localMessages[name]=[]);
-}
-function render(){
- $("welcome").textContent = myName ? "Merhaba, @"+myName : "Kullanıcılarını bul ve sohbete başla.";
- $("profilePanel").classList.add("hidden");
- $("createPanel").classList.add("hidden");
- const q=$("searchInput").value.trim().toLowerCase();
- $("clearSearch").style.display=q?"block":"none";
- let names = [...new Set(demoUsers)];
- if(myName && !names.includes(myName)) names.unshift(myName);
- let html="";
- if(activeTab==="chats"){
-  names = names.filter(n=>n!==myName && getMessages(n).length);
-  names.forEach(n=>html+=personHTML(n,"Son mesaj: "+getMessages(n).at(-1).text));
- }else{
-  names = names.filter(n=>n!==myName && n.toLowerCase().includes(q));
-  if(q && !names.length) html='<div class="empty">Kullanıcı bulunamadı.</div>';
-  names.forEach(n=>html+=personHTML(n,"Nexora kullanıcısı"));
+
+async function start(){
+ try{
+  status("Giriş yapılıyor...");
+  let {data:{session},error} = await db.auth.getSession();
+  if(error) throw error;
+
+  if(!session){
+   const r = await db.auth.signInAnonymously();
+   if(r.error) throw r.error;
+   session = r.data.session;
+  }
+
+  me = session.user;
+  const r = await db.from("profiles")
+    .select("id,username")
+    .eq("id",me.id)
+    .maybeSingle();
+
+  if(r.error) throw r.error;
+  myProfile = r.data;
+
+  if(!myProfile){
+   $("profile").classList.remove("hidden");
+   status("Bir kullanıcı adı seç.");
+  }else{
+   $("profile").classList.add("hidden");
+   status("Bağlandı.");
+  }
+
+  renderWelcome();
+  await render();
+  if(refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(async()=>{
+   if(document.visibilityState==="visible"){
+    await render();
+    if(activePerson && !$("chat").classList.contains("hidden")){
+     await loadMessages();
+    }
+   }
+  },3000);
+ }catch(e){
+  console.error(e);
+  status("Bağlantı hatası: "+(e.message||"Ayarları kontrol et."));
  }
- $("results").innerHTML=html || (activeTab==="chats"?'<div class="empty">Henüz sohbetin yok.</div>':'<div class="empty">Kullanıcı ara.</div>');
 }
-function personHTML(n,desc){
- return `<div class="person" data-user="${escapeHTML(n)}">
- <div class="avatar">${escapeHTML(n.slice(0,1).toUpperCase())}</div>
- <div class="person-info"><div class="username">${escapeHTML(n)}</div>
- <div class="muted">${escapeHTML(desc)}</div></div>
- <button class="smallbtn" type="button">Mesaj</button></div>`;
+
+function renderWelcome(){
+ $("welcome").textContent=myProfile
+  ? "@"+myProfile.username
+  : "Nexora'ya hoş geldin.";
 }
-function openChat(n){
- if(!myName){$("profilePanel").classList.remove("hidden");$("usernameInput").focus();return}
- currentPerson=n;
- $("chatName").textContent=n;
- $("chatAvatar").textContent=n.slice(0,1).toUpperCase();
+
+async function render(){
+ if(!me)return;
+ const q=$("search").value.trim().toLowerCase();
+ $("clear").classList.toggle("hidden",!q);
+
+ if(tab==="people"){
+  if(!q){
+   $("results").innerHTML='<div class="empty">Arkadaşını bulmak için kullanıcı adını ara.</div>';
+   return;
+  }
+  const r=await db.from("profiles")
+   .select("id,username")
+   .ilike("username",q.replace(/[%_,]/g,""))
+   .neq("id",me.id)
+   .order("username")
+   .limit(30);
+
+  if(r.error){
+   $("results").innerHTML='<div class="empty">Arama başarısız oldu.</div>';
+   return;
+  }
+  $("results").innerHTML=r.data.length
+   ?r.data.map(personHTML).join("")
+   :'<div class="empty">Kullanıcı bulunamadı.</div>';
+ }else{
+  const r=await db.from("messages")
+   .select("sender_id,receiver_id,content,created_at")
+   .or(`sender_id.eq.${me.id},receiver_id.eq.${me.id}`)
+   .order("created_at",{ascending:false})
+   .limit(200);
+
+  if(r.error){
+   $("results").innerHTML='<div class="empty">Sohbetler yüklenemedi.</div>';
+   return;
+  }
+  const ids=[...new Set(r.data.map(m=>
+   m.sender_id===me.id?m.receiver_id:m.sender_id
+  ))];
+  if(!ids.length){
+   $("results").innerHTML='<div class="empty">Henüz sohbetin yok.</div>';
+   return;
+  }
+  const p=await db.from("profiles").select("id,username").in("id",ids);
+  if(p.error){
+   $("results").innerHTML='<div class="empty">Kişiler yüklenemedi.</div>';
+   return;
+  }
+  const byId=Object.fromEntries(p.data.map(x=>[x.id,x]));
+  const seen=new Set();
+  const people=[];
+  for(const m of r.data){
+   const id=m.sender_id===me.id?m.receiver_id:m.sender_id;
+   if(!seen.has(id)&&byId[id]){
+    seen.add(id);
+    people.push({...byId[id],last:m.content});
+   }
+  }
+  $("results").innerHTML=people.map(personHTML).join("");
+ }
+}
+
+function personHTML(p){
+ return `<div class="person" data-id="${esc(p.id)}" data-name="${esc(p.username)}">
+ <div class="avatar">${esc(p.username[0].toUpperCase())}</div>
+ <div class="info"><div class="name">${esc(p.username)}</div>
+ <div class="muted">${esc(p.last||"Sohbet başlat")}</div></div>
+ <button class="btn" type="button">Mesaj</button></div>`;
+}
+
+$("results").addEventListener("click",async e=>{
+ const p=e.target.closest("[data-id]");
+ if(!p)return;
+ activePerson={id:p.dataset.id,username:p.dataset.name};
+ $("chatName").textContent=activePerson.username;
+ $("chatAvatar").textContent=activePerson.username[0].toUpperCase();
  $("chat").classList.remove("hidden");
- renderMessages();
-}
-function renderMessages(){
- const msgs=getMessages(currentPerson);
- $("chatMessages").innerHTML=msgs.map(m=>`<div class="bubble ${m.mine?"mine":""}">${escapeHTML(m.text)}</div>`).join("");
- $("chatMessages").scrollTop=$("chatMessages").scrollHeight;
-}
-$("results").addEventListener("click",e=>{
- const p=e.target.closest("[data-user]");
- if(p)openChat(p.dataset.user);
+ await loadMessages();
+ $("message").focus();
 });
-document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
- activeTab=b.dataset.tab;
- document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));
+
+async function loadMessages(){
+ if(!activePerson||!me)return;
+ const other=activePerson.id;
+ const r=await db.from("messages")
+  .select("id,sender_id,receiver_id,content,created_at")
+  .or(`and(sender_id.eq.${me.id},receiver_id.eq.${other}),and(sender_id.eq.${other},receiver_id.eq.${me.id})`)
+  .order("created_at",{ascending:true})
+  .limit(200);
+
+ if(r.error){
+  $("messages").innerHTML='<div class="empty">Mesajlar yüklenemedi.</div>';
+  return;
+ }
+ $("messages").innerHTML=r.data.map(m=>
+  `<div class="bubble ${m.sender_id===me.id?"mine":""}">
+  ${esc(m.content)}
+  <div class="time">${new Date(m.created_at).toLocaleString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+  </div>`
+ ).join("");
+ $("messages").scrollTop=$("messages").scrollHeight;
+}
+
+$("sendForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const content=$("message").value.trim();
+ if(!content||!activePerson||!me||loading)return;
+ loading=true;
+ const btn=$("sendForm").querySelector("button");
+ btn.disabled=true;
+ try{
+  const r=await db.from("messages").insert({
+   sender_id:me.id,
+   receiver_id:activePerson.id,
+   content
+  });
+  if(r.error)throw r.error;
+  $("message").value="";
+  await loadMessages();
+ }catch(err){
+  alert("Mesaj gönderilemedi: "+err.message);
+ }finally{
+  loading=false;
+  btn.disabled=false;
+ }
+});
+
+$("save").onclick=async()=>{
+ if(!me)return;
+ const username=$("username").value.trim().toLowerCase();
+ if(!/^[a-z0-9_]{3,20}$/.test(username)){
+  alert("3-20 karakter kullan. Harf, rakam ve _ olabilir.");
+  return;
+ }
+ $("save").disabled=true;
+ try{
+  const r=await db.from("profiles").insert({id:me.id,username});
+  if(r.error){
+   if(r.error.code==="23505")throw new Error("Bu kullanıcı adı alınmış.");
+   throw r.error;
+  }
+  myProfile={id:me.id,username};
+  $("profile").classList.add("hidden");
+  renderWelcome();
+  status("Kullanıcı adın kaydedildi.");
+  await render();
+ }catch(e){
+  alert(e.message||"Kullanıcı adı kaydedilemedi.");
+ }finally{
+  $("save").disabled=false;
+ }
+};
+
+$("menu").onclick=()=>{
+ $("profile").classList.toggle("hidden");
+ if(myProfile)$("username").value=myProfile.username;
+};
+$("back").onclick=()=>{
+ $("chat").classList.add("hidden");
+ activePerson=null;
+ render();
+};
+$("search").addEventListener("input",()=>{
+ tab="people";
+ document.querySelectorAll("[data-tab]").forEach(b=>
+  b.classList.toggle("active",b.dataset.tab==="people"));
  render();
 });
-$("searchInput").addEventListener("input",render);
-$("clearSearch").onclick=()=>{$("searchInput").value="";render()};
-$("searchBtn").onclick=()=>{$("searchInput").focus();window.scrollTo({top:0,behavior:"smooth"})};
-$("menuBtn").onclick=()=>{$("profilePanel").classList.toggle("hidden");$("usernameInput").value=myName};
-$("saveName").onclick=()=>{
- const n=$("usernameInput").value.trim().toLowerCase();
- if(!/^[a-z0-9_]{3,20}$/.test(n)){alert("3-20 karakter kullan. Harf, rakam ve _ olabilir.");return}
- if(demoUsers.includes(n)&&n!==myName){alert("Bu isim örnek listede dolu.");return}
- myName=n;localStorage.setItem("nexora_name",n);render();
+$("clear").onclick=()=>{$("search").value="";render()};
+$("focusSearch").onclick=()=>{
+ $("search").focus();
+ window.scrollTo({top:0,behavior:"smooth"});
 };
-$("goSearch").onclick=()=>{$("searchInput").focus();$("searchBox").scrollIntoView({behavior:"smooth"})};
-$("backBtn").onclick=()=>{$("chat").classList.add("hidden");render()};
-$("messageForm").onsubmit=e=>{
- e.preventDefault();
- const text=$("messageInput").value.trim();
- if(!text||!currentPerson)return;
- getMessages(currentPerson).push({text,mine:true});
- $("messageInput").value="";
- renderMessages();
-};
-// Bu sürüm yalnızca arayüz prototipidir.
-// Gerçek kullanıcı araması ve cihazlar arası mesajlaşma için
-// sunucu/veritabanı bağlantısı sonraki aşamada eklenecek.
-render();
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+ tab=b.dataset.tab;
+ document.querySelectorAll("[data-tab]").forEach(x=>
+  x.classList.toggle("active",x===b));
+ render();
+});
+
+start();
 </script>
 </body>
 </html>
