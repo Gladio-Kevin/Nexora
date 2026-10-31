@@ -14,11 +14,11 @@ html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;backgroun
 body{overflow:hidden}
 button,input{font:inherit}
 button{cursor:pointer;border:0}
-#app{height:100dvh;display:flex;flex-direction:column}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 header{height:58px;background:#191e2b;border-bottom:1px solid #30374a;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
 .logo{font-size:23px;font-weight:800;color:#8b91ff}
 #status{font-size:12px;color:#9da5ba}
-.screen{display:none;flex:1;min-height:0}
+.screen{display:none;flex:1;min-height:0;overflow:hidden}
 .screen.active{display:flex}
 #authScreen{align-items:center;justify-content:center;padding:20px}
 .authbox{width:100%;max-width:370px;background:#191e2b;border:1px solid #30374a;border-radius:17px;padding:25px}
@@ -28,15 +28,15 @@ input{width:100%;background:#101521;color:white;border:1px solid #343c50;border-
 input:focus{border-color:#858bff}
 .primary{background:#777eff;color:white;border-radius:10px;padding:13px;width:100%;font-weight:700;margin-top:8px}
 .secondary{background:#292f40;color:#e9eaff;border-radius:10px;padding:11px;width:100%;margin-top:8px}
-#mainScreen{flex-direction:row;min-height:0}
-#sidebar{width:320px;min-width:270px;background:#191e2b;border-right:1px solid #30374a;display:flex;flex-direction:column;min-height:0}
-.sidehead{padding:14px;border-bottom:1px solid #30374a}
+#mainScreen{flex-direction:row;min-height:0;overflow:hidden}
+#sidebar{width:320px;min-width:270px;height:100%;background:#191e2b;border-right:1px solid #30374a;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.sidehead{padding:14px;border-bottom:1px solid #30374a;flex-shrink:0}
 .sidehead h3{margin:0 0 7px}
 #search{margin:8px 0 0}
 #groupCreateBtn{background:#30375a;color:#dfe1ff;padding:11px;border-radius:9px;width:100%;font-weight:bold;margin-top:9px}
-#contactList{overflow-y:auto;flex:1;padding:8px}
+#contactList{overflow-y:auto;overflow-x:hidden;flex:1 1 0;min-height:0;padding:8px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 .section-title{font-size:11px;color:#929bb3;font-weight:bold;letter-spacing:1px;padding:13px 9px 7px}
-.contact{display:flex;align-items:center;gap:11px;padding:11px;border-radius:11px;cursor:pointer;margin-bottom:4px}
+.contact{display:flex;align-items:center;gap:11px;padding:11px;border-radius:11px;cursor:pointer;margin-bottom:4px;flex-shrink:0}
 .contact:hover,.contact.selected{background:#292f40}
 .avatar{width:39px;height:39px;border-radius:50%;background:#555ed0;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}
 .group-avatar{background:#168b69}
@@ -44,16 +44,16 @@ input:focus{border-color:#858bff}
 .contactname{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lastmsg{font-size:12px;color:#9da5ba;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .unread{background:#ff4058;color:white;min-width:21px;height:21px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;padding:0 6px}
-#searchResults{border-bottom:1px solid #30374a;max-height:190px;overflow-y:auto}
+#searchResults{border-bottom:1px solid #30374a;max-height:190px;overflow-y:auto;flex-shrink:0}
 .result{padding:10px 13px;cursor:pointer;display:flex;align-items:center;gap:10px}
 .result:hover{background:#292f40}
 .emptylist{text-align:center;color:#8d96ac;font-size:13px;padding:22px 12px}
-#chatPanel{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+#chatPanel{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 #chatEmpty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:#9da5ba;padding:20px}
 #chatHeader{height:62px;border-bottom:1px solid #30374a;display:flex;align-items:center;padding:0 15px;gap:10px;flex-shrink:0}
 #chatName{font-weight:bold}
 #chatSub{font-size:11px;color:#9da5ba;margin-top:4px}
-#messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px}
+#messages{flex:1;min-height:0;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
 .msg{max-width:min(78%,500px);padding:11px 13px;border-radius:13px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4}
 .mine{background:#5962d7;align-self:flex-end;border-bottom-right-radius:4px}
 .theirs{background:#292f40;align-self:flex-start;border-bottom-left-radius:4px}
@@ -67,8 +67,8 @@ input:focus{border-color:#858bff}
 .modal-bg.show{display:flex}
 .modal{background:#191e2b;border:1px solid #343c50;border-radius:16px;width:100%;max-width:440px;max-height:85dvh;display:flex;flex-direction:column;padding:17px}
 .modal h3{margin:0 0 5px}
-.modal-scroll{overflow-y:auto;min-height:0}
-.modal-actions{display:flex;gap:8px;margin-top:12px}
+.modal-scroll{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch}
+.modal-actions{display:flex;gap:8px;margin-top:12px;flex-shrink:0}
 .modal-actions button{flex:1}
 .select-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer}
 .select-user:hover{background:#292f40}
@@ -77,7 +77,7 @@ input:focus{border-color:#858bff}
 .group-count{font-size:12px;color:#9da5ba;margin:4px 0 10px}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343b50;color:white;padding:12px 17px;border-radius:10px;display:none;z-index:20;max-width:90%;font-size:13px}
 @media(max-width:650px){
- #sidebar{width:100%;min-width:0;border:0}
+ #sidebar{width:100%;min-width:0;height:100%;border:0}
  #chatPanel{display:none}
  #mainScreen.chat-open #sidebar{display:none}
  #mainScreen.chat-open #chatPanel{display:flex}
@@ -251,20 +251,10 @@ async function refreshAll(){
  }finally{busy=false}
 }
 
-/* DÜZELTİLDİ: Özel sohbetlerde artık tüm kayıtlı kullanıcılar listelenir. */
+/* Yalnızca mesaj geçmişi bulunan kullanıcıları özel sohbetlerde göster. */
 async function loadContacts(){
- try {
-  const {data:profiles,error:pe}=await db
-   .from("profiles")
-   .select("id,username")
-   .neq("id",myId)
-   .order("username")
-   .limit(500);
-
-  if(pe)throw pe;
-
-  const {data:msgs,error:me}=await db
-   .from("messages")
+ try{
+  const {data:msgs,error:me}=await db.from("messages")
    .select("id,sender_id,receiver_id,content,created_at,read_at")
    .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
    .order("created_at",{ascending:false})
@@ -282,15 +272,30 @@ async function loadContacts(){
    }
   }
 
+  const ids=[...latest.keys()];
+
+  if(!ids.length){
+   contacts=[];
+   renderContacts();
+   return;
+  }
+
+  const {data:profiles,error:pe}=await db.from("profiles")
+   .select("id,username")
+   .in("id",ids)
+   .order("username");
+
+  if(pe)throw pe;
+
   contacts=(profiles||[]).map(p=>{
    const last=latest.get(p.id);
    return {
     ...p,
-    lastMessage:last?last.content:"Sohbet başlat",
-    lastTime:last?last.created_at:null,
+    lastMessage:last?.content||"",
+    lastTime:last?.created_at||null,
     unread:unread.get(p.id)||0
    };
-  });
+  }).sort((a,b)=>new Date(b.lastTime)-new Date(a.lastTime));
 
   renderContacts();
  }catch(e){
@@ -395,7 +400,7 @@ function renderContacts(){
  if(!contacts.length){
   const e=document.createElement("div");
   e.className="emptylist";
-  e.textContent="Henüz başka kayıtlı kullanıcı yok.";
+  e.textContent="Henüz mesajlaştığın kimse yok.";
   box.append(e);
  }else contacts.forEach(c=>box.append(makeContact(c,"private")));
 }
