@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr" translate="no">
 <head>
@@ -15,11 +14,12 @@ body{overflow:hidden}
 button,input,textarea{font:inherit}
 button{cursor:pointer;border:0}
 #app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-header{height:58px;background:#191e2b;border-bottom:1px solid #30374a;display:flex;align-items:center;justify-content:space-between;padding:0 15px;flex-shrink:0;gap:10px}
+header{height:58px;background:#191e2b;border-bottom:1px solid #30374a;display:flex;align-items:center;justify-content:space-between;padding:0 15px;flex-shrink:0}
 .logo{font-size:23px;font-weight:800;color:#8b91ff}
 .header-right{display:flex;align-items:center;gap:12px}
 #status{font-size:12px;color:#9da5ba}
-#profileBtn{width:37px;height:37px;border-radius:50%;background:#30375a;color:white;font-weight:bold;font-size:17px;display:flex;align-items:center;justify-content:center}
+#profileBtn{width:37px;height:37px;border-radius:50%;background:#30375a;color:white;font-weight:bold;font-size:17px;overflow:hidden}
+#profileBtn img{width:100%;height:100%;object-fit:cover}
 .screen{display:none;flex:1;min-height:0;overflow:hidden}
 .screen.active{display:flex}
 #authScreen{align-items:center;justify-content:center;padding:20px}
@@ -36,7 +36,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
 #sidebar{width:100%;height:100%;background:#191e2b;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .sidehead{padding:12px 13px;border-bottom:1px solid #30374a;flex-shrink:0}
 .sidehead h3{margin:0 0 7px;font-size:17px}
-#myUsername{margin-bottom:3px}
 #groupCreateBtn{background:#30375a;color:#dfe1ff;padding:11px;border-radius:9px;width:100%;font-weight:bold;margin-top:9px}
 #search{margin:8px 0 0}
 #searchResults{border-bottom:1px solid #30374a;max-height:150px;overflow-y:auto;flex-shrink:0}
@@ -45,8 +44,8 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .columns{display:flex;flex:1;min-height:0;overflow:hidden}
 .list-column{width:50%;min-width:0;display:flex;flex-direction:column;overflow:hidden}
 .list-column:first-child{border-right:1px solid #30374a}
-.column-heading{height:43px;flex-shrink:0;display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #30374a;font-size:11px;color:#aab1c5;font-weight:bold;letter-spacing:.8px}
-.column-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.column-heading{height:43px;flex-shrink:0;display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #30374a;font-size:11px;color:#aab1c5;font-weight:bold}
+.column-scroll{flex:1;min-height:0;overflow-y:auto;padding:6px;touch-action:pan-y}
 .contact{display:flex;align-items:center;gap:8px;padding:9px 7px;border-radius:10px;cursor:pointer;margin-bottom:3px;min-width:0}
 .contact:hover,.contact.selected{background:#292f40}
 .avatar{width:36px;height:36px;border-radius:50%;background:#555ed0;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;overflow:hidden}
@@ -55,44 +54,57 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .contactinfo{flex:1;min-width:0}
 .contactname{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lastmsg{font-size:11px;color:#9da5ba;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.unread{background:#ff4058;color:white;min-width:19px;height:19px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;padding:0 5px;flex-shrink:0}
+.unread{background:#ff4058;color:white;min-width:19px;height:19px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:10px;padding:0 5px}
 .emptylist{text-align:center;color:#8d96ac;font-size:12px;padding:20px 7px;line-height:1.5}
 #chatPanel{flex:1;min-width:0;display:none;flex-direction:column;min-height:0;overflow:hidden}
 #chatEmpty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:#9da5ba;padding:20px}
 #chatHeader{height:62px;border-bottom:1px solid #30374a;display:flex;align-items:center;padding:0 15px;gap:10px;flex-shrink:0}
 #chatName{font-weight:bold}
 #chatSub{font-size:11px;color:#9da5ba;margin-top:4px}
-#messages{flex:1;min-height:0;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
-.msg{max-width:min(82%,500px);padding:11px 13px;border-radius:13px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4}
+#backBtn{display:none;background:#292f40;color:white;border-radius:8px;padding:8px 11px}
+#pinnedBar{display:none;align-items:center;gap:8px;background:#222943;padding:9px 12px;border-bottom:1px solid #3b4561;font-size:12px;flex-shrink:0}
+#pinnedText{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+#pinnedBar button{background:#343d5b;color:white;border-radius:6px;padding:5px 9px}
+#messages{flex:1;min-height:0;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:min(82%,500px);padding:11px 13px;border-radius:13px;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.4;position:relative;touch-action:pan-y}
 .mine{background:#5962d7;align-self:flex-end;border-bottom-right-radius:4px}
 .theirs{background:#292f40;align-self:flex-start;border-bottom-left-radius:4px}
 .msgsender{font-size:11px;color:#aeb5ff;margin-bottom:5px;font-weight:bold}
 .msgtime{font-size:10px;opacity:.65;margin-top:5px;text-align:right}
+.msgmeta{font-size:10px;opacity:.8;margin-top:4px;text-align:right}
+.reactions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.reaction{background:#252b43;border:1px solid #7780a8;border-radius:20px;padding:3px 7px;font-size:13px;cursor:pointer}
+.reply-preview{border-left:3px solid #aab0ff;background:#252b43;padding:6px 8px;margin-bottom:7px;border-radius:5px;font-size:11px;cursor:pointer;opacity:.9}
+#replyBar{display:none;padding:8px 12px;background:#222943;border-top:1px solid #30374a;font-size:12px;align-items:center;gap:10px}
+#replyBar span{flex:1}
+#replyBar button{background:none;color:white;font-size:18px}
 #sendArea{display:flex;gap:8px;padding:10px;border-top:1px solid #30374a;flex-shrink:0}
 #messageInput{margin:0;flex:1;min-width:0}
 #sendBtn{background:#777eff;color:white;border-radius:10px;padding:0 16px;font-weight:bold}
-#backBtn{display:none;background:#292f40;color:white;border-radius:8px;padding:8px 11px}
 .modal-bg{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:15px;z-index:10}
 .modal-bg.show{display:flex}
 .modal{background:#191e2b;border:1px solid #343c50;border-radius:16px;width:100%;max-width:440px;max-height:88dvh;display:flex;flex-direction:column;padding:17px;overflow:hidden}
 .modal h3{margin:0 0 5px}
-.modal-scroll{overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch}
+.modal-scroll{overflow-y:auto;min-height:0}
 .modal-actions{display:flex;gap:8px;margin-top:12px;flex-shrink:0}
 .modal-actions button{flex:1}
 .select-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer}
-.select-user:hover{background:#292f40}
 .select-user.chosen{background:#173c32}
-.checkmark{margin-left:auto;color:#39df9b;font-size:23px;font-weight:bold}
+.checkmark{margin-left:auto;color:#39df9b;font-size:23px}
 .group-count{font-size:12px;color:#9da5ba;margin:4px 0 10px}
 .profile-top{display:flex;align-items:center;gap:14px;margin:15px 0}
 .profile-avatar{width:68px;height:68px;border-radius:50%;background:#555ed0;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:bold;overflow:hidden;flex-shrink:0}
 .profile-avatar img{width:100%;height:100%;object-fit:cover}
 .profile-label{font-size:12px;color:#aab1c5;margin-top:12px}
+#actionModal .modal{max-width:350px}
+.quick-reactions{display:flex;justify-content:space-around;font-size:25px;padding:12px 0}
+.quick-reactions span{cursor:pointer}
+.action-button{background:#292f40;color:white;padding:12px;border-radius:8px;text-align:left;margin-top:5px;width:100%}
+.action-button.danger{color:#ff7585}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343b50;color:white;padding:12px 17px;border-radius:10px;display:none;z-index:30;max-width:90%;font-size:13px;text-align:center}
 @media(min-width:651px){
  #sidebar{width:340px;min-width:340px;border-right:1px solid #30374a}
  #chatPanel{display:flex}
- #chatEmpty{display:flex}
 }
 @media(max-width:650px){
  header{height:55px}
@@ -107,7 +119,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
  .avatar{width:31px;height:31px;font-size:12px}
  .contactname{font-size:12px}
  .lastmsg{font-size:10px}
- .unread{min-width:17px;height:17px;font-size:9px}
 }
 </style>
 </head>
@@ -117,7 +128,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
  <div class="logo">StableX</div>
  <div class="header-right">
   <div id="status">Bağlanıyor...</div>
-  <button id="profileBtn" onclick="openProfile()" title="Profil">?</button>
+  <button id="profileBtn" onclick="openProfile()">?</button>
  </div>
 </header>
 
@@ -125,7 +136,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
  <div class="authbox">
   <h2>StableX'e Hoş Geldin</h2>
   <p class="muted">Bir kullanıcı adı belirleyerek sohbete başla.</p>
-  <input id="usernameInput" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+  <input id="usernameInput" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off">
   <button class="primary" id="authBtn" onclick="register()">Hesap oluştur</button>
   <p class="muted" id="authError"></p>
  </div>
@@ -137,45 +148,39 @@ button:disabled{opacity:.5;cursor:not-allowed}
    <h3>Mesajlar</h3>
    <div class="muted" id="myUsername"></div>
    <button id="groupCreateBtn" onclick="openGroupModal()">＋ Grup oluştur</button>
-   <input id="search" placeholder="Kişi ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+   <input id="search" placeholder="Kişi ara..." autocomplete="off">
   </div>
   <div id="searchResults"></div>
-
   <div class="columns">
    <div class="list-column">
     <div class="column-heading">SOHBETLER</div>
-    <div class="column-scroll" id="contactList">
-     <div class="emptylist">Yükleniyor...</div>
-    </div>
+    <div class="column-scroll" id="contactList"><div class="emptylist">Yükleniyor...</div></div>
    </div>
    <div class="list-column">
     <div class="column-heading">GRUPLAR</div>
-    <div class="column-scroll" id="groupList">
-     <div class="emptylist">Yükleniyor...</div>
-    </div>
+    <div class="column-scroll" id="groupList"><div class="emptylist">Yükleniyor...</div></div>
    </div>
   </div>
  </aside>
-
  <main id="chatPanel">
   <div id="chatEmpty">
-   <div>
-    <div style="font-size:42px">✉</div>
-    <h3>StableX Sohbet</h3>
-    <p>Bir kişi veya grup seç.</p>
-   </div>
+   <div><div style="font-size:42px">✉</div><h3>StableX Sohbet</h3><p>Bir kişi veya grup seç.</p></div>
   </div>
   <div id="chatHeader" style="display:none">
    <button id="backBtn" onclick="closeChat()">←</button>
    <div class="avatar" id="chatAvatar">?</div>
-   <div style="min-width:0">
-    <div id="chatName"></div>
-    <div id="chatSub"></div>
-   </div>
+   <div style="min-width:0"><div id="chatName"></div><div id="chatSub"></div></div>
   </div>
-  <div id="messages" style="display:none" translate="no"></div>
+  <div id="pinnedBar">
+   <button onclick="changePinned(-1)">‹</button>
+   <div id="pinnedText" onclick="jumpPinned()"></div>
+   <span id="pinnedCount"></span>
+   <button onclick="changePinned(1)">›</button>
+  </div>
+  <div id="messages" style="display:none"></div>
+  <div id="replyBar"><span id="replyText"></span><button onclick="cancelReply()">×</button></div>
   <div id="sendArea" style="display:none">
-   <input id="messageInput" placeholder="Mesajını yaz..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
+   <input id="messageInput" placeholder="Mesajını yaz..." autocomplete="off">
    <button id="sendBtn" onclick="sendMessage()">Gönder</button>
   </div>
  </main>
@@ -186,15 +191,13 @@ button:disabled{opacity:.5;cursor:not-allowed}
  <div class="modal">
   <h3>Yeni grup oluştur</h3>
   <p class="muted">Grup kurucusu dahil en az 3, en fazla 10 kişi seçebilirsin.</p>
-  <input id="groupName" maxlength="20" placeholder="Grup adı" autocomplete="off" translate="no">
+  <input id="groupName" maxlength="20" placeholder="Grup adı">
   <div class="group-count" id="memberCount">Seçilen kişi: 1 / 10 (sen dahil)</div>
-  <input id="groupSearch" placeholder="Kullanıcı ara..." autocomplete="off" autocorrect="off" spellcheck="false" translate="no">
-  <div class="modal-scroll" id="groupUserList">
-   <div class="emptylist">Kullanıcılar yükleniyor...</div>
-  </div>
+  <input id="groupSearch" placeholder="Kullanıcı ara...">
+  <div class="modal-scroll" id="groupUserList"></div>
   <div class="modal-actions">
    <button class="secondary" onclick="closeGroupModal()">İptal</button>
-   <button class="primary" style="margin:0" id="createGroupBtn" onclick="createGroup()">Grubu oluştur</button>
+   <button class="primary" id="createGroupBtn" onclick="createGroup()">Grubu oluştur</button>
   </div>
  </div>
 </div>
@@ -204,24 +207,36 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <h3>Profilim</h3>
   <div class="profile-top">
    <div class="profile-avatar" id="profileAvatar">?</div>
-   <div style="min-width:0">
-    <b id="profilePreviewName">Kullanıcı</b>
-    <div class="muted" id="profilePreviewUsername">@kullanıcı</div>
-   </div>
+   <div><b id="profilePreviewName">Kullanıcı</b><div class="muted" id="profilePreviewUsername">@kullanıcı</div></div>
   </div>
   <div class="profile-label">Kullanıcı adı</div>
-  <input id="profileUsername" maxlength="24" placeholder="Kullanıcı adı" autocomplete="off" autocorrect="off" spellcheck="false">
+  <input id="profileUsername" maxlength="24">
   <div class="profile-label">Görünen ad</div>
-  <input id="profileDisplayName" maxlength="40" placeholder="Görünen ad">
+  <input id="profileDisplayName" maxlength="40">
   <div class="profile-label">Hakkımda</div>
-  <textarea id="profileBio" maxlength="300" placeholder="Kendinden bahset..."></textarea>
-  <div class="profile-label">Profil fotoğrafı bağlantısı</div>
-  <input id="profileAvatarUrl" placeholder="https://..." autocomplete="off">
-  <p class="muted">Fotoğraf için doğrudan bir resim bağlantısı kullanabilirsin.</p>
+  <textarea id="profileBio" maxlength="300"></textarea>
+  <div class="profile-label">Profil fotoğrafı</div>
+  <input id="profileFile" type="file" accept="image/jpeg,image/png,image/webp">
+  <p class="muted">JPG, PNG veya WebP. En fazla 10 MB.</p>
   <div class="modal-actions">
    <button class="secondary" onclick="closeProfile()">Kapat</button>
-   <button class="primary" style="margin:0" id="saveProfileBtn" onclick="saveProfile()">Kaydet</button>
+   <button class="primary" id="saveProfileBtn" onclick="saveProfile()">Kaydet</button>
   </div>
+ </div>
+</div>
+
+<div id="actionModal" class="modal-bg">
+ <div class="modal">
+  <div class="quick-reactions">
+   <span onclick="quickReact('❤️')">❤️</span>
+   <span onclick="quickReact('😂')">😂</span>
+   <span onclick="quickReact('😮')">😮</span>
+   <span onclick="quickReact('😢')">😢</span>
+   <span onclick="quickReact('🙏')">🙏</span>
+   <span onclick="quickReact('👍')">👍</span>
+  </div>
+  <div id="messageActions"></div>
+  <button class="secondary" onclick="closeActions()">Kapat</button>
  </div>
 </div>
 
@@ -233,698 +248,699 @@ const SUPABASE_KEY="sb_publishable_uAiMJd3Q6lyzoUOsKNhpuw_FbUFzxk_";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 
-let myId=null,myProfile=null;
-let selectedChat=null;
+let myId=null,myProfile=null,selectedChat=null;
 let contacts=[],groups=[],groupUsers=[],selectedMembers=new Set();
 let searchTimer=null,groupSearchTimer=null,refreshTimer=null;
-let busy=false;
+let busy=false,replyTarget=null,actionMessage=null;
+let pinnedMessages=[],pinnedIndex=0;
+let typingTimer=null,lastTypingWrite=0;
 
 function toast(message){
- const el=$("toast");
- el.textContent=message;
- el.style.display="block";
- clearTimeout(toast.timer);
- toast.timer=setTimeout(()=>el.style.display="none",3500);
+ const el=$("toast");el.textContent=message;el.style.display="block";
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display="none",3500);
 }
 function showScreen(id){
  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
  $(id).classList.add("active");
 }
 function showError(message){$("authError").textContent=message}
-
 function avatarContent(el,url,name){
  el.innerHTML="";
  if(url){
-  const img=document.createElement("img");
-  img.src=url;
-  img.alt="";
+  const img=document.createElement("img");img.src=url;img.alt="";
   img.onerror=()=>{el.textContent=(name||"?").charAt(0).toUpperCase()};
   el.append(img);
- }else{
-  el.textContent=(name||"?").charAt(0).toUpperCase();
- }
+ }else el.textContent=(name||"?").charAt(0).toUpperCase();
 }
+function escapeText(s){return String(s??"")}
+function currentTable(){return selectedChat?.type==="group"?"group_messages":"messages"}
 
 async function start(){
  try{
   let {data:{session},error}=await db.auth.getSession();
   if(error)throw error;
   if(!session){
-   const result=await db.auth.signInAnonymously();
-   if(result.error)throw result.error;
-   session=result.data.session;
+   const r=await db.auth.signInAnonymously();if(r.error)throw r.error;
+   session=r.data.session;
   }
   myId=session.user.id;
   const {data:profile,error:pe}=await db.from("profiles").select("*").eq("id",myId).maybeSingle();
   if(pe)throw pe;
-  if(!profile){
-   $("status").textContent="Kullanıcı oluştur";
-   showScreen("authScreen");
-   return;
-  }
-  myProfile=profile;
-  enterApp();
+  if(!profile){$("status").textContent="Kullanıcı oluştur";showScreen("authScreen");return}
+  myProfile=profile;enterApp();
  }catch(e){
-  $("status").textContent="Bağlantı hatası";
-  showError(e.message);
-  showScreen("authScreen");
+  $("status").textContent="Bağlantı hatası";showError(e.message);showScreen("authScreen");
  }
 }
-
 async function register(){
  const username=$("usernameInput").value.trim();
  if(username.length<3){showError("Kullanıcı adı en az 3 karakter olmalı.");return}
- if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){
-  showError("Kullanıcı adında boşluk veya özel karakter kullanma.");return;
- }
- $("authBtn").disabled=true;
- showError("Kontrol ediliyor...");
+ if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){showError("Kullanıcı adında boşluk veya özel karakter kullanma.");return}
+ $("authBtn").disabled=true;showError("Kontrol ediliyor...");
  try{
   const {data:existing,error:ce}=await db.from("profiles").select("id").ilike("username",username).limit(1);
   if(ce)throw ce;
   if(existing?.length){showError("Bu kullanıcı adı zaten kullanılıyor.");return}
   const {data,error}=await db.from("profiles").insert({id:myId,username}).select().single();
-  if(error)throw error;
-  myProfile=data;
-  enterApp();
+  if(error)throw error;myProfile=data;enterApp();
  }catch(e){showError("Hata: "+e.message)}
  finally{$("authBtn").disabled=false}
 }
-
 function enterApp(){
- $("status").textContent="Çevrimiçi";
- updateMyProfileDisplay();
- showScreen("mainScreen");
- refreshAll();
+ $("status").textContent="Çevrimiçi";updateMyProfileDisplay();showScreen("mainScreen");
+ setPresence(true);refreshAll();
  if(refreshTimer)clearInterval(refreshTimer);
  refreshTimer=setInterval(refreshAll,5000);
 }
-
 function updateMyProfileDisplay(){
- const username=myProfile?.username||"Kullanıcı";
- $("myUsername").textContent="@"+username;
- avatarContent($("profileBtn"),myProfile?.avatar_url,myProfile?.display_name||username);
- $("profilePreviewName").textContent=myProfile?.display_name||username;
- $("profilePreviewUsername").textContent="@"+username;
- avatarContent($("profileAvatar"),myProfile?.avatar_url,myProfile?.display_name||username);
+ const u=myProfile?.username||"Kullanıcı";
+ $("myUsername").textContent="@"+u;
+ avatarContent($("profileBtn"),myProfile?.avatar_url,myProfile?.display_name||u);
+ $("profilePreviewName").textContent=myProfile?.display_name||u;
+ $("profilePreviewUsername").textContent="@"+u;
+ avatarContent($("profileAvatar"),myProfile?.avatar_url,myProfile?.display_name||u);
 }
+async function setPresence(online){
+ try{
+  await db.from("user_presence").upsert({
+   user_id:myId,is_online:online,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()
+  },{onConflict:"user_id"});
+ }catch(e){console.warn("Presence:",e.message)}
+}
+document.addEventListener("visibilitychange",()=>{if(myId)setPresence(!document.hidden)});
+window.addEventListener("beforeunload",()=>{if(myId)setPresence(false)});
 
 async function refreshAll(){
- if(busy)return;
- busy=true;
+ if(busy)return;busy=true;
  try{
   await Promise.all([loadContacts(),loadGroups()]);
   if(selectedChat){
    if(selectedChat.type==="private")await loadPrivateMessages();
    else await loadGroupMessages();
+   await loadPinnedMessages();
   }
  }finally{busy=false}
 }
 
-/* Özel sohbet listesi */
 async function loadContacts(){
  try{
-  const {data:msgs,error:me}=await db.from("messages")
-   .select("id,sender_id,receiver_id,content,created_at,read_at")
-   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
-   .order("created_at",{ascending:false})
-   .limit(1000);
-  if(me)throw me;
-
+  const {data:msgs,error}=await db.from("messages").select("id,sender_id,receiver_id,content,created_at,read_at,deleted_at")
+   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`).order("created_at",{ascending:false}).limit(1000);
+  if(error)throw error;
   const latest=new Map(),unread=new Map();
-  for(const m of (msgs||[])){
+  for(const m of msgs||[]){
    const other=m.sender_id===myId?m.receiver_id:m.sender_id;
    if(!latest.has(other))latest.set(other,m);
-   if(m.receiver_id===myId&&!m.read_at){
-    unread.set(other,(unread.get(other)||0)+1);
-   }
+   if(m.receiver_id===myId&&!m.read_at)unread.set(other,(unread.get(other)||0)+1);
   }
-
   const ids=[...latest.keys()];
-  if(!ids.length){
-   contacts=[];
-   renderContacts();
-   return;
-  }
-
-  const {data:profiles,error:pe}=await db.from("profiles")
-   .select("id,username,display_name,avatar_url")
-   .in("id",ids);
+  if(!ids.length){contacts=[];renderContacts();return}
+  const {data:profiles,error:pe}=await db.from("profiles").select("id,username,display_name,avatar_url").in("id",ids);
   if(pe)throw pe;
-
   contacts=(profiles||[]).map(p=>{
-   const last=latest.get(p.id);
-   return {
-    ...p,
-    lastMessage:last?.content||"",
-    lastTime:last?.created_at||null,
-    unread:unread.get(p.id)||0
-   };
+   const m=latest.get(p.id);
+   return {...p,lastMessage:m?.deleted_at?"Bu mesaj silindi":m?.content||"",lastTime:m?.created_at,unread:unread.get(p.id)||0};
   }).sort((a,b)=>new Date(b.lastTime)-new Date(a.lastTime));
-
   renderContacts();
- }catch(e){
-  console.error("Kişiler yüklenemedi:",e);
-  toast("Kişiler yüklenemedi: "+e.message);
- }
+ }catch(e){console.error(e)}
 }
-
 async function loadGroups(){
  try{
-  const {data:members,error:me}=await db.from("group_members")
-   .select("group_id").eq("user_id",myId);
-  if(me)throw me;
-
+  const {data:members,error}=await db.from("group_members").select("group_id").eq("user_id",myId);
+  if(error)throw error;
   const ids=[...new Set((members||[]).map(x=>x.group_id))];
   if(!ids.length){groups=[];renderContacts();return}
-
-  const {data:gs,error:ge}=await db.from("chat_groups")
-   .select("id,name,owner_id,created_at,avatar_url")
-   .in("id",ids);
+  const {data:gs,error:ge}=await db.from("chat_groups").select("id,name,owner_id,created_at,avatar_url,description").in("id",ids);
   if(ge)throw ge;
-
-  const {data:gm,error:gme}=await db.from("group_messages")
-   .select("id,group_id,sender_id,content,created_at")
-   .in("group_id",ids)
-   .order("created_at",{ascending:false})
-   .limit(1000);
+  const {data:gm,error:gme}=await db.from("group_messages").select("id,group_id,sender_id,content,created_at").in("group_id",ids).order("created_at",{ascending:false}).limit(1000);
   if(gme)throw gme;
-
   const messageIds=(gm||[]).map(x=>x.id);
   let readSet=new Set();
   if(messageIds.length){
-   const {data:reads,error:re}=await db.from("group_message_reads")
-    .select("message_id").eq("user_id",myId).in("message_id",messageIds);
-   if(re)throw re;
+   const {data:reads}=await db.from("group_message_reads").select("message_id").eq("user_id",myId).in("message_id",messageIds);
    readSet=new Set((reads||[]).map(x=>String(x.message_id)));
   }
-
   groups=(gs||[]).map(g=>{
    const own=(gm||[]).filter(m=>m.group_id===g.id);
-   const latest=own[0]||null;
+   const latest=own[0];
    const unread=own.filter(m=>m.sender_id!==myId&&!readSet.has(String(m.id))).length;
-   return {...g,lastMessage:latest?.content||"Henüz mesaj yok",unread};
-  }).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-
+   return {...g,lastMessage:latest?.content||"Henüz mesaj yok",lastTime:latest?.created_at||g.created_at,unread};
+  }).sort((a,b)=>new Date(b.lastTime)-new Date(a.lastTime));
   renderContacts();
- }catch(e){
-  console.error("Gruplar:",e);
-  toast("Gruplar yüklenemedi: "+e.message);
- }
+ }catch(e){console.error("Gruplar:",e)}
 }
-
 function makeContact(item,type){
  const row=document.createElement("div");
  row.className="contact"+(selectedChat?.type===type&&selectedChat?.id===item.id?" selected":"");
-
- const av=document.createElement("div");
- av.className="avatar"+(type==="group"?" group-avatar":"");
+ const av=document.createElement("div");av.className="avatar"+(type==="group"?" group-avatar":"");
  avatarContent(av,item.avatar_url,type==="group"?item.name:(item.display_name||item.username));
-
- const info=document.createElement("div");
- info.className="contactinfo";
-
- const name=document.createElement("div");
- name.className="contactname";
+ const info=document.createElement("div");info.className="contactinfo";
+ const name=document.createElement("div");name.className="contactname";
  name.textContent=type==="group"?item.name:(item.display_name||item.username);
-
- const last=document.createElement("div");
- last.className="lastmsg";
- last.textContent=item.lastMessage||"Henüz mesaj yok";
-
- info.append(name,last);
- row.append(av,info);
-
- if(item.unread>0){
-  const badge=document.createElement("div");
-  badge.className="unread";
-  badge.textContent=item.unread>99?"99+":item.unread;
-  row.append(badge);
- }
-
+ const last=document.createElement("div");last.className="lastmsg";last.textContent=item.lastMessage||"Henüz mesaj yok";
+ info.append(name,last);row.append(av,info);
+ if(item.unread>0){const badge=document.createElement("div");badge.className="unread";badge.textContent=item.unread>99?"99+":item.unread;row.append(badge)}
  row.onclick=()=>type==="group"?openGroup(item):openPrivate(item);
+ row.addEventListener("contextmenu",e=>{e.preventDefault();chatListActions(item,type)});
+ let pressTimer;
+ row.addEventListener("touchstart",()=>{pressTimer=setTimeout(()=>chatListActions(item,type),650)},{passive:true});
+ row.addEventListener("touchend",()=>clearTimeout(pressTimer));
  return row;
 }
-
 function renderContacts(){
- const contactBox=$("contactList");
- const groupBox=$("groupList");
- contactBox.innerHTML="";
- groupBox.innerHTML="";
-
- if(!contacts.length){
-  const e=document.createElement("div");
-  e.className="emptylist";
-  e.textContent="Henüz özel sohbetin yok.";
-  contactBox.append(e);
- }else{
-  contacts.forEach(c=>contactBox.append(makeContact(c,"private")));
- }
-
- if(!groups.length){
-  const e=document.createElement("div");
-  e.className="emptylist";
-  e.textContent="Henüz grubun yok.";
-  groupBox.append(e);
- }else{
-  groups.forEach(g=>groupBox.append(makeContact(g,"group")));
- }
+ const c=$("contactList"),g=$("groupList");c.innerHTML="";g.innerHTML="";
+ if(!contacts.length)c.innerHTML='<div class="emptylist">Henüz özel sohbetin yok.</div>';
+ else contacts.forEach(x=>c.append(makeContact(x,"private")));
+ if(!groups.length)g.innerHTML='<div class="emptylist">Henüz grubun yok.</div>';
+ else groups.forEach(x=>g.append(makeContact(x,"group")));
+}
+function chatListActions(item,type){
+ const choice=prompt("Sohbet işlemi:\n1 - Sohbeti sabitle\n2 - Sohbet sabitlemesini kaldır\n3 - Sohbeti sessize al\n4 - Sessizi kaldır\n5 - Sohbeti temizle");
+ if(!choice)return;
+ if(choice==="1"||choice==="2")toggleChatPin(item,type,choice==="1");
+ if(choice==="3"||choice==="4")toggleMute(item,type,choice==="3");
+ if(choice==="5")clearChat(item,type);
+}
+async function toggleChatPin(item,type,pin){
+ try{
+  const table=type==="group"?"group_conversation_pins":"conversation_pins";
+  if(type==="group"){
+   if(pin){
+    const {error}=await db.from(table).upsert({user_id:myId,group_id:item.id},{onConflict:"user_id,group_id"});
+    if(error)throw error;
+   }else{
+    const {error}=await db.from(table).delete().eq("user_id",myId).eq("group_id",item.id);
+    if(error)throw error;
+   }
+  }else{
+   if(pin){
+    const {error}=await db.from(table).upsert({user_id:myId,other_user_id:item.id},{onConflict:"user_id,other_user_id"});
+    if(error)throw error;
+   }else{
+    const {error}=await db.from(table).delete().eq("user_id",myId).eq("other_user_id",item.id);
+    if(error)throw error;
+   }
+  }
+  toast(pin?"Sohbet sabitlendi.":"Sabitleme kaldırıldı.");
+ }catch(e){toast("İşlem başarısız: "+e.message)}
+}
+async function toggleMute(item,type,mute){
+ try{
+  const table=type==="group"?"group_chat_settings":"private_chat_settings";
+  const key=type==="group"?{user_id:myId,group_id:item.id}:{user_id:myId,other_user_id:item.id};
+  const {error}=await db.from(table).upsert({...key,is_muted:mute,updated_at:new Date().toISOString()},{onConflict:type==="group"?"user_id,group_id":"user_id,other_user_id"});
+  if(error)throw error;
+  toast(mute?"Sohbet sessize alındı.":"Sessiz kaldırıldı.");
+ }catch(e){toast("Sessize alma hatası: "+e.message)}
+}
+async function clearChat(item,type){
+ if(!confirm("Bu sohbeti yalnızca kendi hesabında temizlemek istiyor musun?"))return;
+ try{
+  const table=type==="group"?"group_chat_settings":"private_chat_settings";
+  const key=type==="group"?{user_id:myId,group_id:item.id}:{user_id:myId,other_user_id:item.id};
+  const {error}=await db.from(table).upsert({...key,cleared_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:type==="group"?"user_id,group_id":"user_id,other_user_id"});
+  if(error)throw error;
+  toast("Sohbet bu hesabında temizlendi.");
+  if(selectedChat?.id===item.id)closeChat();
+ }catch(e){toast("Temizleme hatası: "+e.message)}
 }
 
 $("search").addEventListener("input",()=>{
- clearTimeout(searchTimer);
- const q=$("search").value.trim();
+ clearTimeout(searchTimer);const q=$("search").value.trim();
  if(q.length<2){$("searchResults").innerHTML="";return}
  searchTimer=setTimeout(()=>searchUsers(q),300);
 });
-
 async function searchUsers(q){
  try{
-  const {data,error}=await db.from("profiles")
-   .select("id,username,display_name,avatar_url")
-   .ilike("username",`%${q}%`)
-   .neq("id",myId)
-   .limit(20);
+  const {data,error}=await db.from("profiles").select("id,username,display_name,avatar_url").ilike("username",`%${q}%`).neq("id",myId).limit(20);
   if(error)throw error;
-
-  const box=$("searchResults");
-  box.innerHTML="";
-  if(!data?.length){
-   box.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';
-   return;
-  }
-
+  const box=$("searchResults");box.innerHTML="";
+  if(!data?.length){box.innerHTML='<div class="emptylist">Kullanıcı bulunamadı.</div>';return}
   data.forEach(u=>{
-   const row=document.createElement("div");
-   row.className="result";
-   const av=document.createElement("div");
-   av.className="avatar";
-   avatarContent(av,u.avatar_url,u.display_name||u.username);
-   const name=document.createElement("b");
-   name.textContent=(u.display_name||u.username)+"  @"+u.username;
-   row.append(av,name);
-   row.onclick=()=>openPrivate(u);
-   box.append(row);
+   const row=document.createElement("div");row.className="result";
+   const av=document.createElement("div");av.className="avatar";avatarContent(av,u.avatar_url,u.display_name||u.username);
+   const name=document.createElement("b");name.textContent=(u.display_name||u.username)+" @"+u.username;
+   row.append(av,name);row.onclick=()=>openPrivate(u);box.append(row);
   });
  }catch(e){toast("Arama hatası: "+e.message)}
 }
-
 function showChat(){
- $("mainScreen").classList.add("chat-open");
- $("chatEmpty").style.display="none";
- $("chatHeader").style.display="flex";
- $("messages").style.display="flex";
- $("sendArea").style.display="flex";
- $("searchResults").innerHTML="";
- $("search").value="";
+ $("mainScreen").classList.add("chat-open");$("chatEmpty").style.display="none";
+ $("chatHeader").style.display="flex";$("messages").style.display="flex";
+ $("sendArea").style.display="flex";$("searchResults").innerHTML="";$("search").value="";
 }
-
 async function openPrivate(user){
  selectedChat={type:"private",id:user.id,user};
  $("chatName").textContent=user.display_name||user.username;
  $("chatSub").textContent="@"+user.username;
  avatarContent($("chatAvatar"),user.avatar_url,user.display_name||user.username);
- $("chatAvatar").className="avatar";
- showChat();
- await markPrivateRead();
- await loadPrivateMessages();
- await loadContacts();
+ $("chatAvatar").className="avatar";showChat();
+ cancelReply();await markPrivateRead();await loadPrivateMessages();await loadPinnedMessages();
  $("messageInput").focus();
 }
-
 async function openGroup(group){
  selectedChat={type:"group",id:group.id,group};
- $("chatName").textContent=group.name;
- $("chatSub").textContent="Grup sohbeti";
+ $("chatName").textContent=group.name;$("chatSub").textContent="Grup sohbeti";
  avatarContent($("chatAvatar"),group.avatar_url,group.name);
- $("chatAvatar").className="avatar group-avatar";
- showChat();
- await markGroupRead();
- await loadGroupMessages();
- await loadGroups();
+ $("chatAvatar").className="avatar group-avatar";showChat();
+ cancelReply();await markGroupRead();await loadGroupMessages();await loadPinnedMessages();
  $("messageInput").focus();
 }
-
 async function closeChat(){
- selectedChat=null;
- $("mainScreen").classList.remove("chat-open");
- $("chatEmpty").style.display="flex";
- $("chatHeader").style.display="none";
- $("messages").style.display="none";
- $("sendArea").style.display="none";
+ selectedChat=null;$("mainScreen").classList.remove("chat-open");
+ $("chatEmpty").style.display="flex";$("chatHeader").style.display="none";
+ $("messages").style.display="none";$("sendArea").style.display="none";
+ $("pinnedBar").style.display="none";$("replyBar").style.display="none";
  await refreshAll();
 }
-
 async function markPrivateRead(){
- if(!selectedChat||selectedChat.type!=="private")return;
+ if(selectedChat?.type!=="private")return;
  const {error}=await db.rpc("mark_messages_read",{other_user_id:selectedChat.id});
- if(error)console.error("Özel mesaj okundu hatası:",error);
+ if(error)console.error(error);
 }
-
 async function markGroupRead(){
- if(!selectedChat||selectedChat.type!=="group")return;
+ if(selectedChat?.type!=="group")return;
  const {error}=await db.rpc("mark_group_messages_read",{p_group_id:selectedChat.id});
- if(error)console.error("Grup okundu hatası:",error);
+ if(error)console.error(error);
 }
-
-function addMessage(msg,username){
+function messageTable(){return selectedChat?.type==="group"?"group_messages":"messages"}
+function addMessage(msg,username,reactions=[],readers=[]){
  const bubble=document.createElement("div");
  bubble.className="msg "+(msg.sender_id===myId?"mine":"theirs");
-
+ bubble.dataset.id=msg.id;
  if(selectedChat?.type==="group"&&msg.sender_id!==myId){
-  const sender=document.createElement("div");
-  sender.className="msgsender";
-  sender.textContent=username||"Kullanıcı";
-  bubble.append(sender);
+  const sender=document.createElement("div");sender.className="msgsender";sender.textContent=username||"Kullanıcı";bubble.append(sender);
  }
-
+ if(msg.reply_to_id){
+  const preview=document.createElement("div");preview.className="reply-preview";
+  preview.textContent="Yanıtlanan mesaj";preview.onclick=()=>jumpToMessage(msg.reply_to_id);bubble.append(preview);
+ }
  const content=document.createElement("div");
  content.textContent=msg.deleted_at?"Bu mesaj silindi":msg.content;
-
- const time=document.createElement("div");
- time.className="msgtime";
+ bubble.append(content);
+ const time=document.createElement("div");time.className="msgtime";
  time.textContent=new Date(msg.created_at).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
- if(msg.edited_at&&!msg.deleted_at)time.textContent+=" · düzenlendi";
-
- bubble.append(content,time);
+ if(msg.edited_at&&!msg.deleted_at)time.textContent+=" · Düzenlendi";
+ bubble.append(time);
+ if(msg.sender_id===myId&&selectedChat?.type==="private"){
+  const read=document.createElement("div");read.className="msgmeta";
+  read.textContent=msg.read_at?"◉":"◉";read.style.color=msg.read_at?"#54e5a1":"#c7c9d9";
+  read.title=msg.read_at?"Okundu":"Henüz okunmadı";bubble.append(read);
+ }
+ if(reactions.length){
+  const wrap=document.createElement("div");wrap.className="reactions";
+  const counts={};
+  reactions.forEach(r=>{counts[r.emoji]=(counts[r.emoji]||0)+1});
+  Object.entries(counts).forEach(([emoji,count])=>{
+   const b=document.createElement("button");b.className="reaction";b.textContent=emoji+" "+count;
+   b.onclick=()=>toggleReaction(msg.id,emoji);wrap.append(b);
+  });
+  bubble.append(wrap);
+ }
+ if(selectedChat?.type==="group"&&readers.length){
+  const names=document.createElement("div");names.className="msgmeta";
+  names.textContent="Okuyan: "+readers.map(x=>x.display_name||x.username).join(", ");
+  bubble.append(names);
+ }
+ bubble.addEventListener("dblclick",()=>toggleReaction(msg.id,"❤️"));
+ let pressTimer;
+ bubble.addEventListener("touchstart",()=>{pressTimer=setTimeout(()=>openMessageActions(msg),550)},{passive:true});
+ bubble.addEventListener("touchend",()=>clearTimeout(pressTimer));
+ bubble.addEventListener("contextmenu",e=>{e.preventDefault();openMessageActions(msg)});
+ bubble.addEventListener("touchstart",e=>{
+  bubble.dataset.touchX=e.touches[0].clientX;
+ },{passive:true});
+ bubble.addEventListener("touchend",e=>{
+  const dx=e.changedTouches[0].clientX-Number(bubble.dataset.touchX||0);
+  if(dx>75&&msg.sender_id!==myId)startReply(msg);
+ });
  $("messages").append(bubble);
 }
-
+async function fetchReactions(ids,type){
+ if(!ids.length)return [];
+ const table=type==="group"?"group_message_reactions":"message_reactions";
+ const field=type==="group"?"group_message_id":"message_id";
+ const {data,error}=await db.from(table).select("*").in(field,ids);
+ if(error){console.warn("Tepkiler yüklenemedi:",error.message);return []}
+ return data||[];
+}
 async function loadPrivateMessages(){
- if(!selectedChat||selectedChat.type!=="private")return;
+ if(selectedChat?.type!=="private")return;
  const target=selectedChat.id;
-
  const {data,error}=await db.from("messages").select("*")
   .or(`and(sender_id.eq.${myId},receiver_id.eq.${target}),and(sender_id.eq.${target},receiver_id.eq.${myId})`)
   .order("created_at",{ascending:true}).limit(500);
-
  if(error){console.error(error);return}
  if(selectedChat?.type!=="private"||selectedChat.id!==target)return;
-
- const box=$("messages");
- const wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+ const ids=(data||[]).map(m=>m.id);
+ const reactions=await fetchReactions(ids,"private");
+ const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
  box.innerHTML="";
- (data||[]).forEach(m=>addMessage(m));
+ (data||[]).forEach(m=>addMessage(m,null,reactions.filter(r=>String(r.message_id)===String(m.id))));
  if(wasBottom)box.scrollTop=box.scrollHeight;
  await markPrivateRead();
 }
-
 async function loadGroupMessages(){
- if(!selectedChat||selectedChat.type!=="group")return;
+ if(selectedChat?.type!=="group")return;
  const target=selectedChat.id;
-
- const {data,error}=await db.from("group_messages").select("*")
-  .eq("group_id",target)
-  .order("created_at",{ascending:true}).limit(500);
-
- if(error){console.error("Grup mesajları:",error);return}
+ const {data,error}=await db.from("group_messages").select("*").eq("group_id",target).order("created_at",{ascending:true}).limit(500);
+ if(error){console.error(error);return}
  if(selectedChat?.type!=="group"||selectedChat.id!==target)return;
-
  const senderIds=[...new Set((data||[]).map(m=>m.sender_id))];
- let nameMap=new Map();
-
+ let nameMap=new Map(),readerMap=new Map();
  if(senderIds.length){
-  const {data:profiles}=await db.from("profiles")
-   .select("id,username").in("id",senderIds);
-  nameMap=new Map((profiles||[]).map(p=>[p.id,p.username]));
+  const {data:profiles}=await db.from("profiles").select("id,username,display_name").in("id",senderIds);
+  nameMap=new Map((profiles||[]).map(p=>[p.id,p.display_name||p.username]));
  }
-
- const box=$("messages");
- const wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+ const ids=(data||[]).map(m=>m.id);
+ const reactions=await fetchReactions(ids,"group");
+ if(ids.length){
+  const {data:reads}=await db.from("group_message_reads").select("message_id,user_id").in("message_id",ids);
+  const readerIds=[...new Set((reads||[]).map(r=>r.user_id).filter(id=>id!==myId))];
+  let readerProfiles=[];
+  if(readerIds.length){
+   const {data:p}=await db.from("profiles").select("id,username,display_name").in("id",readerIds);
+   readerProfiles=p||[];
+  }
+  const pmap=new Map(readerProfiles.map(p=>[p.id,p]));
+  (reads||[]).forEach(r=>{
+   if(r.user_id!==myId&&pmap.has(r.user_id)){
+    if(!readerMap.has(String(r.message_id)))readerMap.set(String(r.message_id),[]);
+    readerMap.get(String(r.message_id)).push(pmap.get(r.user_id));
+   }
+  });
+ }
+ const box=$("messages"),wasBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
  box.innerHTML="";
- (data||[]).forEach(m=>addMessage(m,nameMap.get(m.sender_id)));
+ (data||[]).forEach(m=>addMessage(m,nameMap.get(m.sender_id),reactions.filter(r=>String(r.group_message_id)===String(m.id)),readerMap.get(String(m.id))||[]));
  if(wasBottom)box.scrollTop=box.scrollHeight;
  await markGroupRead();
 }
 
 async function sendMessage(){
  if(!selectedChat)return;
- const input=$("messageInput");
- const content=input.value;
+ const input=$("messageInput"),content=input.value;
  if(!content.trim())return;
-
  $("sendBtn").disabled=true;
  try{
+  const payload={sender_id:myId,content,reply_to_id:replyTarget?.id||null};
   let result;
-  if(selectedChat.type==="private"){
-   result=await db.from("messages").insert({
-    sender_id:myId,
-    receiver_id:selectedChat.id,
-    content
-   });
-  }else{
-   result=await db.from("group_messages").insert({
-    group_id:selectedChat.id,
-    sender_id:myId,
-    content
-   });
-  }
+  if(selectedChat.type==="private")result=await db.from("messages").insert({...payload,receiver_id:selectedChat.id});
+  else result=await db.from("group_messages").insert({...payload,group_id:selectedChat.id});
   if(result.error)throw result.error;
-  input.value="";
-  if(selectedChat.type==="private")await loadPrivateMessages();
-  else await loadGroupMessages();
+  input.value="";cancelReply();
+  if(selectedChat.type==="private")await loadPrivateMessages();else await loadGroupMessages();
   await refreshAll();
- }catch(e){
-  toast("Mesaj gönderilemedi: "+e.message);
-  console.error(e);
- }finally{
-  $("sendBtn").disabled=false;
-  input.focus();
- }
+ }catch(e){toast("Mesaj gönderilemedi: "+e.message)}
+ finally{$("sendBtn").disabled=false;input.focus()}
 }
-
 $("messageInput").addEventListener("keydown",e=>{
- if(e.key==="Enter"&&!e.shiftKey){
-  e.preventDefault();
-  sendMessage();
- }
+ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}
 });
+$("usernameInput").addEventListener("keydown",e=>{if(e.key==="Enter")register()});
 
-$("usernameInput").addEventListener("keydown",e=>{
- if(e.key==="Enter")register();
+function startReply(msg){
+ replyTarget=msg;
+ $("replyText").textContent="Yanıt: "+(msg.content||"Mesaj");
+ $("replyBar").style.display="flex";$("messageInput").focus();
+}
+function cancelReply(){replyTarget=null;$("replyBar").style.display="none"}
+async function jumpToMessage(id){
+ const el=document.querySelector(`.msg[data-id="${id}"]`);
+ if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid #aab0ff";setTimeout(()=>el.style.outline="",1500)}
+}
+function closeActions(){$("actionModal").classList.remove("show");actionMessage=null}
+function openMessageActions(msg){
+ actionMessage=msg;
+ const box=$("messageActions");box.innerHTML="";
+ const actions=[
+  ["↩ Yanıtla",()=>{startReply(msg);closeActions()}],
+  ["✏ Düzenle",()=>editMessage(msg)],
+  ["🗑 Herkesten sil",()=>deleteMessage(msg,false),"danger"],
+  ["Silinen mesajı benden kaldır",()=>deleteMessage(msg,true),"danger"],
+  ["↗ Başka sohbete ilet",()=>forwardMessage(msg)],
+  ["📌 Sabitle / sabitlemeyi kaldır",()=>toggleMessagePin(msg)]
+ ];
+ actions.forEach(([label,fn,cls])=>{
+  if((label.includes("Düzenle")||label.includes("Herkesten"))&&msg.sender_id!==myId)return;
+  if(label.includes("Sabitle")&&selectedChat?.type==="group"&&!canManageGroup())return;
+  const b=document.createElement("button");b.className="action-button "+(cls||"");b.textContent=label;b.onclick=fn;box.append(b);
+ });
+ $("actionModal").classList.add("show");
+}
+async function quickReact(emoji){
+ if(!actionMessage)return;
+ await toggleReaction(actionMessage.id,emoji);closeActions();
+}
+async function toggleReaction(id,emoji){
+ if(!selectedChat)return;
+ const table=selectedChat.type==="group"?"group_message_reactions":"message_reactions";
+ const field=selectedChat.type==="group"?"group_message_id":"message_id";
+ try{
+  const {data:old,error}=await db.from(table).select("*").eq(field,id).eq("user_id",myId).maybeSingle();
+  if(error)throw error;
+  if(old?.emoji===emoji){
+   const {error:de}=await db.from(table).delete().eq(field,id).eq("user_id",myId);
+   if(de)throw de;
+  }else{
+   const {error:up}=await db.from(table).upsert({[field]:id,user_id:myId,emoji},{onConflict:field+",user_id"});
+   if(up)throw up;
+  }
+  if(selectedChat.type==="group")await loadGroupMessages();else await loadPrivateMessages();
+ }catch(e){toast("Tepki eklenemedi: "+e.message)}
+}
+async function editMessage(msg){
+ closeActions();
+ const value=prompt("Yeni mesaj:",msg.content);
+ if(value===null||!value.trim())return;
+ try{
+  const rpc=selectedChat.type==="group"?"edit_group_message":"edit_private_message";
+  const {error}=await db.rpc(rpc,{p_message_id:msg.id,p_new_content:value.trim()});
+  if(error)throw error;
+  toast("Mesaj düzenlendi.");
+  if(selectedChat.type==="group")await loadGroupMessages();else await loadPrivateMessages();
+ }catch(e){toast("Düzenleme başarısız: "+e.message)}
+}
+async function deleteMessage(msg,forMe){
+ closeActions();
+ if(!confirm(forMe?"Mesajı yalnızca kendi sohbetinden kaldır?":"Mesaj herkesten silinsin mi?"))return;
+ try{
+  const rpc=selectedChat.type==="group"?(forMe?"hide_group_message":"delete_group_message"):(forMe?"hide_private_message":"delete_private_message");
+  const {error}=await db.rpc(rpc,{p_message_id:msg.id});
+  if(error)throw error;
+  toast(forMe?"Mesaj senden kaldırıldı.":"Mesaj silindi.");
+  if(selectedChat.type==="group")await loadGroupMessages();else await loadPrivateMessages();
+ }catch(e){toast("Silme başarısız: "+e.message)}
+}
+async function forwardMessage(msg){
+ closeActions();
+ const target=prompt("İletmek istediğin kişinin kullanıcı adını yaz:");
+ if(!target)return;
+ try{
+  const {data:user,error}=await db.from("profiles").select("id").ilike("username",target.trim()).neq("id",myId).maybeSingle();
+  if(error)throw error;if(!user)throw new Error("Kullanıcı bulunamadı.");
+  const {error:sendError}=await db.from("messages").insert({sender_id:myId,receiver_id:user.id,content:msg.content});
+  if(sendError)throw sendError;
+  toast("Mesaj iletildi.");
+ }catch(e){toast("İletilemedi: "+e.message)}
+}
+function canManageGroup(){
+ return selectedChat?.type==="group"&&(
+  selectedChat.group?.owner_id===myId||selectedChat.isAdmin===true
+ );
+}
+async function toggleMessagePin(msg){
+ closeActions();
+ try{
+  if(selectedChat.type==="private"){
+   const {data:existing,error}=await db.from("private_message_pins").select("message_id").eq("message_id",msg.id).maybeSingle();
+   if(error)throw error;
+   const result=existing
+    ?await db.rpc("unpin_private_message",{p_message_id:msg.id})
+    :await db.rpc("pin_private_message",{p_message_id:msg.id});
+   if(result.error)throw result.error;
+  }else{
+   const {data:existing,error}=await db.from("group_pinned_messages").select("message_id").eq("group_id",selectedChat.id).eq("message_id",msg.id).maybeSingle();
+   if(error)throw error;
+   const result=existing
+    ?await db.rpc("unpin_group_message",{p_group_id:selectedChat.id,p_message_id:msg.id})
+    :await db.rpc("pin_group_message",{p_group_id:selectedChat.id,p_message_id:msg.id});
+   if(result.error)throw result.error;
+  }
+  toast("Sabitleme güncellendi.");await loadPinnedMessages();
+ }catch(e){toast("Sabitleme başarısız: "+e.message)}
+}
+async function loadPinnedMessages(){
+ if(!selectedChat)return;
+ try{
+  if(selectedChat.type==="private"){
+   const {data:pins,error}=await db.from("private_message_pins").select("message_id,pinned_at").order("pinned_at",{ascending:false});
+   if(error)throw error;
+   const ids=(pins||[]).map(x=>x.message_id);
+   if(!ids.length){pinnedMessages=[];renderPinned();return}
+   const {data:msgs,error:me}=await db.from("messages").select("id,content,deleted_at").in("id",ids);
+   if(me)throw me;
+   pinnedMessages=ids.map(id=>msgs.find(m=>m.id===id)).filter(Boolean);
+  }else{
+   const {data:pins,error}=await db.from("group_pinned_messages").select("message_id,pinned_at").eq("group_id",selectedChat.id).order("pinned_at",{ascending:false});
+   if(error)throw error;
+   const ids=(pins||[]).map(x=>x.message_id);
+   if(!ids.length){pinnedMessages=[];renderPinned();return}
+   const {data:msgs,error:me}=await db.from("group_messages").select("id,content,deleted_at").in("id",ids);
+   if(me)throw me;
+   pinnedMessages=ids.map(id=>msgs.find(m=>m.id===id)).filter(Boolean);
+  }
+  pinnedIndex=Math.min(pinnedIndex,Math.max(0,pinnedMessages.length-1));renderPinned();
+ }catch(e){console.warn("Sabitlemeler:",e.message);pinnedMessages=[];renderPinned()}
+}
+function renderPinned(){
+ const bar=$("pinnedBar");
+ if(!pinnedMessages.length){bar.style.display="none";return}
+ bar.style.display="flex";
+ const p=pinnedMessages[pinnedIndex];
+ $("pinnedText").textContent="📌 "+(p.deleted_at?"Bu mesaj silindi":p.content);
+ $("pinnedCount").textContent=(pinnedIndex+1)+"/"+pinnedMessages.length;
+}
+function changePinned(dir){
+ if(!pinnedMessages.length)return;
+ pinnedIndex=(pinnedIndex+dir+pinnedMessages.length)%pinnedMessages.length;renderPinned();
+}
+function jumpPinned(){
+ if(pinnedMessages[pinnedIndex])jumpToMessage(pinnedMessages[pinnedIndex].id);
+}
+
+/* Yazıyor göstergesi */
+$("messageInput").addEventListener("input",async()=>{
+ if(!selectedChat)return;
+ const now=Date.now();if(now-lastTypingWrite<2500)return;
+ lastTypingWrite=now;
+ try{
+  await db.from("typing_status").upsert({
+   user_id:myId,chat_type:selectedChat.type,
+   chat_id:selectedChat.id,updated_at:new Date().toISOString()
+  },{onConflict:"user_id,chat_type,chat_id"});
+ }catch(e){console.warn("Typing:",e.message)}
 });
+async function updateTypingIndicator(){
+ if(!selectedChat)return;
+ try{
+  const {data,error}=await db.from("typing_status").select("user_id,updated_at")
+   .eq("chat_type",selectedChat.type).eq("chat_id",selectedChat.id).neq("user_id",myId);
+  if(error)return;
+  const active=(data||[]).filter(x=>Date.now()-new Date(x.updated_at).getTime()<5000);
+  if(!active.length){
+   $("chatSub").textContent=selectedChat.type==="group"?"Grup sohbeti":"@"+selectedChat.user.username;
+   return;
+  }
+  if(selectedChat.type==="private")$("chatSub").textContent="yazıyor...";
+  else{
+   const {data:profiles}=await db.from("profiles").select("username,display_name").in("id",active.map(x=>x.user_id));
+   $("chatSub").textContent=(profiles||[]).map(x=>x.display_name||x.username).join(", ")+" yazıyor...";
+  }
+ }catch(e){}
+}
+setInterval(()=>{if(selectedChat)updateTypingIndicator()},3000);
 
+/* Grup işlemleri */
 function openGroupModal(){
- selectedMembers=new Set();
- $("groupName").value="";
- $("groupSearch").value="";
- $("groupModal").classList.add("show");
- loadGroupUsers();
- updateMemberCount();
+ selectedMembers=new Set();$("groupName").value="";$("groupSearch").value="";
+ $("groupModal").classList.add("show");loadGroupUsers();updateMemberCount();
 }
-
-function closeGroupModal(){
- $("groupModal").classList.remove("show");
-}
-
+function closeGroupModal(){$("groupModal").classList.remove("show")}
 function updateMemberCount(){
  const count=selectedMembers.size+1;
  $("memberCount").textContent=`Seçilen kişi: ${count} / 10 (sen dahil)`;
  $("memberCount").style.color=count>=3&&count<=10?"#39df9b":"#9da5ba";
 }
-
 async function loadGroupUsers(){
  try{
-  const {data:msgs,error:me}=await db.from("messages")
-   .select("sender_id,receiver_id")
-   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`)
-   .limit(1000);
-  if(me)throw me;
-
-  const userIds=new Set();
-  (msgs||[]).forEach(m=>{
-   const other=m.sender_id===myId?m.receiver_id:m.sender_id;
-   if(other!==myId)userIds.add(other);
-  });
-
-  const ids=[...userIds];
-  if(!ids.length){
-   groupUsers=[];
-   renderGroupUsers();
-   return;
-  }
-
-  const {data:profiles,error:pe}=await db.from("profiles")
-   .select("id,username,avatar_url,display_name")
-   .in("id",ids)
-   .order("username");
-  if(pe)throw pe;
-  groupUsers=profiles||[];
-  renderGroupUsers();
- }catch(e){
-  console.error("Grup kullanıcıları yüklenemedi:",e);
-  $("groupUserList").innerHTML="";
-  const errorBox=document.createElement("div");
-  errorBox.className="emptylist";
-  errorBox.textContent="Kullanıcılar yüklenemedi: "+e.message;
-  $("groupUserList").append(errorBox);
- }
+  const {data:msgs,error}=await db.from("messages").select("sender_id,receiver_id")
+   .or(`sender_id.eq.${myId},receiver_id.eq.${myId}`).limit(1000);
+  if(error)throw error;
+  const ids=new Set();
+  (msgs||[]).forEach(m=>{const other=m.sender_id===myId?m.receiver_id:m.sender_id;if(other!==myId)ids.add(other)});
+  if(!ids.size){groupUsers=[];renderGroupUsers();return}
+  const {data,error:pe}=await db.from("profiles").select("id,username,avatar_url,display_name").in("id",[...ids]).order("username");
+  if(pe)throw pe;groupUsers=data||[];renderGroupUsers();
+ }catch(e){$("groupUserList").textContent="Kullanıcılar yüklenemedi: "+e.message}
 }
-
 function renderGroupUsers(){
- const q=$("groupSearch").value.trim().toLocaleLowerCase("tr");
- const list=$("groupUserList");
- list.innerHTML="";
+ const q=$("groupSearch").value.trim().toLocaleLowerCase("tr"),list=$("groupUserList");list.innerHTML="";
  const filtered=groupUsers.filter(u=>(u.display_name||u.username).toLocaleLowerCase("tr").includes(q)||u.username.toLocaleLowerCase("tr").includes(q));
-
- if(!filtered.length){
-  list.innerHTML='<div class="emptylist">Mesajlaştığın uygun kullanıcı bulunamadı.</div>';
-  return;
- }
-
+ if(!filtered.length){list.innerHTML='<div class="emptylist">Uygun kullanıcı bulunamadı.</div>';return}
  filtered.forEach(u=>{
-  const row=document.createElement("div");
-  row.className="select-user"+(selectedMembers.has(u.id)?" chosen":"");
-  const av=document.createElement("div");
-  av.className="avatar";
-  avatarContent(av,u.avatar_url,u.display_name||u.username);
-  const name=document.createElement("span");
-  name.textContent=(u.display_name||u.username)+"  @"+u.username;
-  const check=document.createElement("span");
-  check.className="checkmark";
-  check.textContent=selectedMembers.has(u.id)?"✓":"";
+  const row=document.createElement("div");row.className="select-user"+(selectedMembers.has(u.id)?" chosen":"");
+  const av=document.createElement("div");av.className="avatar";avatarContent(av,u.avatar_url,u.display_name||u.username);
+  const name=document.createElement("span");name.textContent=(u.display_name||u.username)+" @"+u.username;
+  const check=document.createElement("span");check.className="checkmark";check.textContent=selectedMembers.has(u.id)?"✓":"";
   row.append(av,name,check);
-
   row.onclick=()=>{
-   if(selectedMembers.has(u.id)){
-    selectedMembers.delete(u.id);
-   }else{
-    if(selectedMembers.size>=9){
-     toast("En fazla 10 kişi olabilir (sen dahil).");
-     return;
-    }
-    selectedMembers.add(u.id);
-   }
-   updateMemberCount();
-   renderGroupUsers();
+   if(selectedMembers.has(u.id))selectedMembers.delete(u.id);
+   else{if(selectedMembers.size>=9){toast("En fazla 10 kişi olabilir.");return}selectedMembers.add(u.id)}
+   updateMemberCount();renderGroupUsers();
   };
   list.append(row);
  });
 }
-
-$("groupSearch").addEventListener("input",()=>{
- clearTimeout(groupSearchTimer);
- groupSearchTimer=setTimeout(renderGroupUsers,150);
-});
-
+$("groupSearch").addEventListener("input",()=>{clearTimeout(groupSearchTimer);groupSearchTimer=setTimeout(renderGroupUsers,150)});
 async function createGroup(){
- const name=$("groupName").value.trim();
- const count=selectedMembers.size+1;
-
- if(name.length<5||name.length>20||!/[\p{L}]/u.test(name)){
-  toast("Grup adı 5-20 karakter olmalı ve en az bir harf içermeli.");
-  return;
- }
- if(count<3){
-  toast("Grup kurmak için en az 3 kişi gerekli (sen dahil).");
-  return;
- }
- if(count>10){
-  toast("En fazla 10 kişi seçebilirsin.");
-  return;
- }
-
+ const name=$("groupName").value.trim(),count=selectedMembers.size+1;
+ if(name.length<5||name.length>20||!/[\p{L}]/u.test(name)){toast("Grup adı 5-20 karakter olmalı.");return}
+ if(count<3||count>10){toast("Grup 3-10 kişi arasında olmalı.");return}
  $("createGroupBtn").disabled=true;
  try{
-  const {data,error}=await db.rpc("create_chat_group",{
-   p_name:name,
-   p_member_ids:[...selectedMembers]
-  });
+  const {data,error}=await db.rpc("create_chat_group",{p_name:name,p_member_ids:[...selectedMembers]});
   if(error)throw error;
-
-  closeGroupModal();
-  toast("Grup oluşturuldu!");
-  await refreshAll();
-  const group=groups.find(g=>g.id===data);
-  if(group)await openGroup(group);
- }catch(e){
-  toast("Grup oluşturulamadı: "+e.message);
-  console.error(e);
- }finally{
-  $("createGroupBtn").disabled=false;
- }
+  closeGroupModal();toast("Grup oluşturuldu.");await refreshAll();
+  const group=groups.find(g=>g.id===data);if(group)await openGroup(group);
+ }catch(e){toast("Grup oluşturulamadı: "+e.message)}
+ finally{$("createGroupBtn").disabled=false}
 }
 
-/* PROFİL */
+/* Profil ve fotoğraf yükleme */
 function openProfile(){
  if(!myProfile)return;
  $("profileUsername").value=myProfile.username||"";
  $("profileDisplayName").value=myProfile.display_name||"";
  $("profileBio").value=myProfile.bio||"";
- $("profileAvatarUrl").value=myProfile.avatar_url||"";
+ $("profileFile").value="";
  $("profileModal").classList.add("show");
 }
-function closeProfile(){
- $("profileModal").classList.remove("show");
+function closeProfile(){$("profileModal").classList.remove("show")}
+async function uploadAvatar(file){
+ if(!file)return myProfile.avatar_url||null;
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("Sadece JPG, PNG veya WebP yükleyebilirsin.");
+ if(file.size>10*1024*1024)throw new Error("Fotoğraf 10 MB sınırını aşamaz.");
+ const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";
+ const path=myId+"/"+Date.now()+"."+ext;
+ const {error}=await db.storage.from("avatars").upload(path,file,{upsert:true,contentType:file.type});
+ if(error)throw error;
+ const {data}=db.storage.from("avatars").getPublicUrl(path);
+ return data.publicUrl;
 }
-
 async function saveProfile(){
  const username=$("profileUsername").value.trim();
  const displayName=$("profileDisplayName").value.trim();
  const bio=$("profileBio").value.trim();
- const avatarUrl=$("profileAvatarUrl").value.trim();
-
- if(username.length<3||username.length>24){
-  toast("Kullanıcı adı 3-24 karakter olmalı.");
-  return;
- }
- if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){
-  toast("Kullanıcı adında boşluk veya özel karakter kullanma.");
-  return;
- }
- if(displayName.length>40||bio.length>300){
-  toast("Görünen ad veya hakkımda alanı çok uzun.");
-  return;
- }
- if(avatarUrl&&!/^https:\/\/.+/i.test(avatarUrl)){
-  toast("Fotoğraf bağlantısı https:// ile başlamalı.");
-  return;
- }
-
+ const file=$("profileFile").files[0];
+ if(username.length<3||username.length>24){toast("Kullanıcı adı 3-24 karakter olmalı.");return}
+ if(!/^[a-zA-Z0-9_ğüşöçıİĞÜŞÖÇ]+$/.test(username)){toast("Kullanıcı adında özel karakter kullanma.");return}
+ if(displayName.length>40||bio.length>300){toast("Profil bilgileri çok uzun.");return}
  $("saveProfileBtn").disabled=true;
  try{
   if(username.toLowerCase()!==String(myProfile.username).toLowerCase()){
-   const {data:existing,error:checkError}=await db.from("profiles")
-    .select("id").ilike("username",username).neq("id",myId).limit(1);
-   if(checkError)throw checkError;
-   if(existing?.length){
-    toast("Bu kullanıcı adı zaten kullanılıyor.");
-    return;
-   }
+   const {data,error}=await db.from("profiles").select("id").ilike("username",username).neq("id",myId).limit(1);
+   if(error)throw error;if(data?.length)throw new Error("Bu kullanıcı adı zaten kullanılıyor.");
   }
-
-  const updates={
-   username,
-   display_name:displayName||null,
-   bio:bio||null,
-   avatar_url:avatarUrl||null
-  };
-
-  const {data,error}=await db.from("profiles")
-   .update(updates).eq("id",myId).select().single();
+  const avatar_url=await uploadAvatar(file);
+  const {data,error}=await db.from("profiles").update({
+   username,display_name:displayName||null,bio:bio||null,avatar_url
+  }).eq("id",myId).select().single();
   if(error)throw error;
-
-  myProfile=data;
-  updateMyProfileDisplay();
-  await loadContacts();
-
-  if(selectedChat?.type==="private"){
-   const updated=contacts.find(c=>c.id===selectedChat.id);
-   if(updated){
-    selectedChat.user=updated;
-    $("chatName").textContent=updated.display_name||updated.username;
-    $("chatSub").textContent="@"+updated.username;
-   }
-  }
-
-  closeProfile();
-  toast("Profil güncellendi.");
- }catch(e){
-  console.error("Profil güncellenemedi:",e);
-  toast("Profil güncellenemedi: "+e.message);
- }finally{
-  $("saveProfileBtn").disabled=false;
- }
+  myProfile=data;updateMyProfileDisplay();await loadContacts();
+  closeProfile();toast("Profil güncellendi.");
+ }catch(e){toast("Profil güncellenemedi: "+e.message)}
+ finally{$("saveProfileBtn").disabled=false}
 }
 
 start();
