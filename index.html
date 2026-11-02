@@ -1065,27 +1065,64 @@ async function quickReact(emoji){
  if(!actionMessage)return;
  await toggleReaction(actionMessage.id,emoji);closeActions();
 }
+
+/* GÜNCELLENDİ: Grup tepkisi kaydetme */
 async function toggleReaction(id,emoji){
  if(!selectedChat)return;
- const table=selectedChat.type==="group"?"group_message_reactions":"message_reactions";
- const field=selectedChat.type==="group"?"group_message_id":"message_id";
+
+ const isGroup=selectedChat.type==="group";
+ const table=isGroup
+  ?"group_message_reactions"
+  :"message_reactions";
+ const field=isGroup
+  ?"group_message_id"
+  :"message_id";
+
  try{
   const {data:old,error}=await db.from(table).select("*")
-   .eq(field,id).eq("user_id",myId).maybeSingle();
+   .eq(field,id)
+   .eq("user_id",myId)
+   .maybeSingle();
+
   if(error)throw error;
+
   if(old?.emoji===emoji){
-   const {error:de}=await db.from(table).delete().eq(field,id).eq("user_id",myId);
+   const {error:de}=await db.from(table).delete()
+    .eq(field,id)
+    .eq("user_id",myId);
+
    if(de)throw de;
   }else{
-   const {error:up}=await db.from(table).upsert({
-    [field]:id,user_id:myId,emoji
-   },{onConflict:field+",user_id"});
+   const payload={
+    [field]:id,
+    user_id:myId,
+    emoji
+   };
+
+   /*
+    * Grup tepkilerinde eski RLS politikasının
+    * kontrol ettiği message_id alanını da doldur.
+    */
+   if(isGroup){
+    payload.message_id=id;
+   }
+
+   const {error:up}=await db.from(table).upsert(
+    payload,
+    {onConflict:field+",user_id"}
+   );
+
    if(up)throw up;
   }
-  if(selectedChat.type==="group")await loadGroupMessages();
+
+  if(isGroup)await loadGroupMessages();
   else await loadPrivateMessages();
- }catch(e){toast("Tepki eklenemedi: "+e.message)}
+
+ }catch(e){
+  toast("Tepki eklenemedi: "+e.message);
+ }
 }
+
 async function editMessage(msg){
  closeActions();
  const value=prompt("Yeni mesaj:",msg.content);
